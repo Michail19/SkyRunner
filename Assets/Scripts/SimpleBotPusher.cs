@@ -25,6 +25,14 @@ public class SimpleBotPusher : MonoBehaviour
     private Rigidbody rb;
     private float nextAttackTime;
 
+    [Header("Animation")]
+    public Animator animator;
+    public string moveSpeedParameter = "MoveSpeed";
+    public string attackTrigger = "Attack";
+    public string deathTrigger = "Dead";
+
+    private bool isMoving;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -48,11 +56,13 @@ public class SimpleBotPusher : MonoBehaviour
     {
         if (GamePauseState.IsPaused)
         {
+            UpdateAnimation();
             return;
         }
 
         if (player == null)
         {
+            UpdateAnimation();
             return;
         }
 
@@ -69,6 +79,7 @@ public class SimpleBotPusher : MonoBehaviour
 
         if (distance <= 0.01f)
         {
+            UpdateAnimation();
             return;
         }
 
@@ -76,15 +87,20 @@ public class SimpleBotPusher : MonoBehaviour
 
         RotateToDirection(direction);
 
+        isMoving = false;
+
         if (distance > stopDistance)
         {
             MoveToPlayer(direction);
+            isMoving = true;
         }
 
         if (distance <= attackDistance)
         {
             TryPushPlayer(direction);
         }
+
+        UpdateAnimation();
     }
 
     private void MoveToPlayer(Vector3 direction)
@@ -114,6 +130,11 @@ public class SimpleBotPusher : MonoBehaviour
 
         nextAttackTime = Time.time + attackCooldown;
 
+        if (animator != null)
+        {
+            animator.SetTrigger(attackTrigger);
+        }
+
         PlayerController playerController = player.GetComponent<PlayerController>();
 
         if (playerController == null)
@@ -141,5 +162,29 @@ public class SimpleBotPusher : MonoBehaviour
                 ForceMode.VelocityChange
             );
         }
+    }
+
+    private void UpdateAnimation()
+    {
+        if (animator == null || rb == null)
+        {
+            return;
+        }
+
+        Vector3 velocity = GetRigidbodyVelocity();
+        velocity.y = 0f;
+
+        float normalizedSpeed = Mathf.Clamp01(velocity.magnitude / moveSpeed);
+
+        animator.SetFloat(moveSpeedParameter, normalizedSpeed);
+    }
+
+    private Vector3 GetRigidbodyVelocity()
+    {
+    #if UNITY_6000_0_OR_NEWER
+        return rb.linearVelocity;
+    #else
+        return rb.velocity;
+    #endif
     }
 }
