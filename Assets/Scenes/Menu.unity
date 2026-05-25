@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 12ccb828343c3405fb94289774b51aad, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -2607,7 +2607,7 @@ Animator:
   m_GameObject: {fileID: 655240352}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 32a1223095cf42d41bb42eae32aea65e, type: 2}
+  m_Controller: {fileID: 9100000, guid: b1004f1d489033a43b893110be2b5488, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -3189,7 +3189,7 @@ MonoBehaviour:
   musicSource: {fileID: 0}
   sfxSource: {fileID: 0}
   menuMusic: {fileID: 8300000, guid: 8b743f84f3832c740be4f7b9e1f991fb, type: 3}
-  gameplayMusic: {fileID: 8300000, guid: ccfe21e2f4210f542867c8885292f40d, type: 3}
+  gameplayMusic: {fileID: 8300000, guid: f6c2828fe3cd1ed4aa5b089d33a1d590, type: 3}
   buttonClickClip: {fileID: 0}
   itemCollectClip: {fileID: 8300000, guid: b1df33f803480ba40af8c1c5c7eaac18, type: 3}
   portalOpenClip: {fileID: 8300000, guid: 58fce600e33c73041bd18151734cb2a0, type: 3}
@@ -5616,8 +5616,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5634,13 +5634,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 60
+  m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
