@@ -1306,6 +1306,7 @@ MonoBehaviour:
   gameOverPanel: {fileID: 1436789412}
   resultText: {fileID: 2105067651}
   isGameOver: 0
+  scriptsToDisableOnGameOver: []
 --- !u!1 &2072392404 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4083804446430700129, guid: 40b515a44064c2945af2c947b937c34a, type: 3}

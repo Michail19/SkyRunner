@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        timerText.text = "Time: " + survivalTime.ToString("0.0");
+        timerText.text = "Время: " + FormatTime(survivalTime);
     }
 
     private void GameOver()
@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
 
         if (resultText != null)
         {
-            resultText.text = "You survived: " + survivalTime.ToString("0.0") + " seconds";
+            resultText.text = "Вы продержались: " + FormatTime(survivalTime);
         }
 
         if (gameOverPanel != null)
@@ -92,7 +92,15 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        Debug.Log("Game Over. Survival time: " + survivalTime.ToString("0.0"));
+        Debug.Log("Game Over. Survival time: " + FormatTime(survivalTime));
+    }
+
+    private string FormatTime(float time)
+    {
+        int minutes = Mathf.FloorToInt(time / 60f);
+        int seconds = Mathf.FloorToInt(time % 60f);
+
+        return $"{minutes:00}:{seconds:00}";
     }
 
     public void RestartGame()
