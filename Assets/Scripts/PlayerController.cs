@@ -63,12 +63,6 @@ public class PlayerController : MonoBehaviour
     public bool enableKnockbackTestKey = true;
     public KeyCode knockbackTestKey = KeyCode.K;
 
-    [Header("Ground Check")]
-    public float groundCheckRadius = 0.28f;
-    public float groundCheckOffset = 0.05f;
-
-    private readonly Collider[] groundHits = new Collider[12];
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -256,47 +250,10 @@ public class PlayerController : MonoBehaviour
 
     private void CheckGround()
     {
-        isGrounded = false;
+        Vector3 origin = col.bounds.center;
+        float rayLength = col.bounds.extents.y + groundCheckExtra;
 
-        if (col == null)
-        {
-            return;
-        }
-
-        Bounds bounds = col.bounds;
-
-        Vector3 checkPosition = new Vector3(
-            bounds.center.x,
-            bounds.min.y + groundCheckRadius * 0.5f + groundCheckOffset,
-            bounds.center.z
-        );
-
-        int hitCount = Physics.OverlapSphereNonAlloc(
-            checkPosition,
-            groundCheckRadius,
-            groundHits,
-            groundMask,
-            QueryTriggerInteraction.Ignore
-        );
-
-        for (int i = 0; i < hitCount; i++)
-        {
-            Collider hit = groundHits[i];
-
-            if (hit == null)
-            {
-                continue;
-            }
-
-            // Не считаем собственные collider-ы игрока землёй.
-            if (hit == col || hit.transform.root == transform.root)
-            {
-                continue;
-            }
-
-            isGrounded = true;
-            return;
-        }
+        isGrounded = Physics.Raycast(origin, Vector3.down, rayLength, ~0, QueryTriggerInteraction.Ignore);
     }
 
     public void ApplyKnockback(Vector3 direction, float force, float upForce)
