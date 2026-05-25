@@ -113,9 +113,12 @@ public class ObjectiveManager : MonoBehaviour
         if (exitZoneObject != null)
         {
             exitZoneObject.SetActive(true);
+            Debug.Log("Exit activated: " + exitZoneObject.name, exitZoneObject);
         }
-
-        Debug.Log("Exit activated.");
+        else
+        {
+            Debug.LogError("ObjectiveManager: exitZoneObject is not assigned.", this);
+        }
     }
 
     public void TryWin()

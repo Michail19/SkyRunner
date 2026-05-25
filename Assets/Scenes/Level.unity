@@ -1489,8 +1489,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   staminaMax: 100
   stamina: 100
-  drainPerSecond: 15
-  regenPerSecond: 10
+  drainPerSecond: 10
+  regenPerSecond: 15
   isMoving: 0
 --- !u!95 &2072392414
 Animator:
@@ -1823,7 +1823,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2004889794873343969, guid: 68fb1af0fc9ff594da6d5fad678a3eea, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2004889794873343969, guid: 68fb1af0fc9ff594da6d5fad678a3eea, type: 3}
       propertyPath: m_LocalPosition.z

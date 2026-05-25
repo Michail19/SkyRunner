@@ -6,6 +6,16 @@ public class ExitZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        TryHandlePlayer(other);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        TryHandlePlayer(other);
+    }
+
+    private void TryHandlePlayer(Collider other)
+    {
         PlayerController player = other.GetComponent<PlayerController>();
 
         if (player == null)
@@ -15,12 +25,23 @@ public class ExitZone : MonoBehaviour
 
         if (player == null)
         {
+            player = other.GetComponentInChildren<PlayerController>();
+        }
+
+        if (player == null)
+        {
             return;
         }
+
+        Debug.Log("Player is inside ExitZone.", this);
 
         if (objectiveManager != null)
         {
             objectiveManager.TryWin();
+        }
+        else
+        {
+            Debug.LogError("ExitZone: ObjectiveManager is not assigned.", this);
         }
     }
 }
