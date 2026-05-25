@@ -953,7 +953,7 @@ MonoBehaviour:
   exitZoneObject: {fileID: 1258992743}
   objectiveText: {fileID: 2127466369}
   itemsToSpawn: 3
-  itemHeightOffset: 1
+  itemHeightOffset: 0.1
   minDistanceFromCenter: 6
 --- !u!4 &1115165011
 Transform:
@@ -1739,7 +1739,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2004889794873343969, guid: 68fb1af0fc9ff594da6d5fad678a3eea, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2004889794873343969, guid: 68fb1af0fc9ff594da6d5fad678a3eea, type: 3}
       propertyPath: m_LocalPosition.z
