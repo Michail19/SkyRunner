@@ -129,6 +129,21 @@ public class ArenaGenerator : MonoBehaviour
         }
     }
 
+    public float GetWorldRadius()
+    {
+        return (gridSize * tileSize) * 0.5f;
+    }
+
+    public float GetWorldDiameter()
+    {
+        return gridSize * tileSize;
+    }
+
+    public int GetApproxTileCount()
+    {
+        return tiles != null ? tiles.Count : gridSize * gridSize;
+    }
+
     private void ConfigureSurface(ArenaTile tile, int heightLevel)
     {
         if (tile == null)

@@ -26,10 +26,52 @@ public class TileCollapseManager : MonoBehaviour
     private bool isRunning;
     private float difficultyTimer;
 
+    [Header("Auto Scale")]
+    public bool autoScaleWithArena = true;
+    public int minTilesPerWave = 1;
+    public int maxTilesPerWaveLimit = 10;
+
     private void Start()
     {
+        if (autoScaleWithArena)
+        {
+            ApplyArenaScale();
+        }
+
         ApplyGameSettings();
         StartCollapse();
+    }
+
+    private void ApplyArenaScale()
+    {
+        if (arenaGenerator == null)
+        {
+            return;
+        }
+
+        float scale = arenaGenerator.gridSize / 18f;
+
+        minDistanceFromPlayer = Mathf.Max(
+            3f,
+            arenaGenerator.tileSize * 2.5f
+        );
+
+        tilesPerWave = Mathf.Clamp(
+            Mathf.RoundToInt(GameSettings.tilesPerWave * scale),
+            minTilesPerWave,
+            maxTilesPerWaveLimit
+        );
+
+        maxTilesPerWave = Mathf.Clamp(
+            Mathf.RoundToInt(4 * scale),
+            4,
+            maxTilesPerWaveLimit
+        );
+
+        difficultyStepTime = Mathf.Max(
+            12f,
+            15f / Mathf.Sqrt(scale)
+        );
     }
 
     private void ApplyGameSettings()

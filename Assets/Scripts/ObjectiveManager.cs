@@ -21,6 +21,11 @@ public class ObjectiveManager : MonoBehaviour
     private int collectedItems;
     private readonly List<CollectibleItem> spawnedItems = new List<CollectibleItem>();
 
+    [Header("Auto Scale")]
+    public bool autoScaleWithArena = true;
+    public int minItems = 3;
+    public int maxItems = 8;
+
     private void Start()
     {
         itemsToSpawn = GameSettings.itemsToCollect;
@@ -30,8 +35,35 @@ public class ObjectiveManager : MonoBehaviour
             exitZoneObject.SetActive(false);
         }
 
+        if (autoScaleWithArena)
+        {
+            ApplyArenaScale();
+        }
+        else
+        {
+            itemsToSpawn = GameSettings.itemsToCollect;
+        }
+
         Invoke(nameof(SpawnItems), 0.2f);
         UpdateUI();
+    }
+    private void ApplyArenaScale()
+    {
+        if (arenaGenerator == null)
+        {
+            itemsToSpawn = GameSettings.itemsToCollect;
+            return;
+        }
+
+        float scale = arenaGenerator.gridSize / 18f;
+
+        itemsToSpawn = Mathf.Clamp(
+            Mathf.RoundToInt(GameSettings.itemsToCollect * scale),
+            minItems,
+            maxItems
+        );
+
+        minDistanceFromCenter = arenaGenerator.GetWorldRadius() * 0.35f;
     }
 
     private void SpawnItems()

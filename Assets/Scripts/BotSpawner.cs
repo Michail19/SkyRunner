@@ -30,10 +30,55 @@ public class BotSpawner : MonoBehaviour
     private readonly List<SimpleBotPusher> aliveBots = new List<SimpleBotPusher>();
     private float difficultyTimer;
 
+    [Header("Auto Scale")]
+    public bool autoScaleWithArena = true;
+    public int minMaxAliveBots = 4;
+    public int maxMaxAliveBots = 15;
+
     private void Start()
     {
+        if (autoScaleWithArena)
+        {
+            ApplyArenaScale();
+        }
+
         ApplyGameSettings();
         StartCoroutine(SpawnLoop());
+    }
+
+    private void ApplyArenaScale()
+    {
+        if (arenaGenerator == null)
+        {
+            return;
+        }
+
+        float scale = arenaGenerator.gridSize / 18f;
+
+        minDistanceFromPlayer = arenaGenerator.GetWorldRadius() * 0.35f;
+
+        maxAliveBots = Mathf.Clamp(
+            Mathf.RoundToInt(GameSettings.maxAliveBots * scale),
+            minMaxAliveBots,
+            maxMaxAliveBots
+        );
+
+        maxAliveBotsLimit = Mathf.Clamp(
+            Mathf.RoundToInt(10 * scale),
+            maxAliveBots,
+            20
+        );
+
+        maxBotsPerWave = Mathf.Clamp(
+            Mathf.RoundToInt(3 * scale),
+            3,
+            8
+        );
+
+        spawnInterval = Mathf.Max(
+            3f,
+            GameSettings.botSpawnInterval / Mathf.Sqrt(scale)
+        );
     }
 
     private void ApplyGameSettings()

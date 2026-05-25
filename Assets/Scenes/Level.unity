@@ -1713,9 +1713,9 @@ MonoBehaviour:
   - {fileID: 4541558159415836685, guid: fbff57b508833ac45afd484b8e2b82b3, type: 3}
   exitZoneObject: {fileID: 1258992743}
   objectiveText: {fileID: 2127466369}
-  itemsToSpawn: 3
+  itemsToSpawn: 10
   itemHeightOffset: 1
-  minDistanceFromCenter: 6
+  minDistanceFromCenter: 16
 --- !u!4 &1115165011
 Transform:
   m_ObjectHideFlags: 0
@@ -2964,7 +2964,7 @@ MonoBehaviour:
   grassTilePrefab: {fileID: 5596972222067733135, guid: 1066b7d195b4e264a84e68024e9b9a58, type: 3}
   stoneTilePrefab: {fileID: 523226909606140474, guid: 7babe3182317ff745b6bce7dd87df18f, type: 3}
   tileParent: {fileID: 0}
-  gridSize: 18
+  gridSize: 54
   tileSize: 2
   tileThickness: 0.25
   islandRadiusOffset: 1
@@ -3687,6 +3687,6 @@ SceneRoots:
   - {fileID: 1591716903}
   - {fileID: 823606911}
   - {fileID: 676203177}
-  - {fileID: 7989263262391320521}
   - {fileID: 1115165011}
+  - {fileID: 7989263262391320521}
   - {fileID: 202791044}
