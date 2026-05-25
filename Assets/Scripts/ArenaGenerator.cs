@@ -94,6 +94,8 @@ public class ArenaGenerator : MonoBehaviour
                     tileParent
                 );
 
+                ConfigureSurface(tile, heightLevel);
+
                 tile.name = $"ArenaTile_{x}_{z}_{heightLevel}";
 
                 // Важно: масштабируем prefab, но collider задаём в локальных координатах.
@@ -124,6 +126,30 @@ public class ArenaGenerator : MonoBehaviour
 
                 tiles.Add(tile);
             }
+        }
+    }
+
+    private void ConfigureSurface(ArenaTile tile, int heightLevel)
+    {
+        if (tile == null)
+        {
+            return;
+        }
+
+        if (heightLevel < 0)
+        {
+            tile.surfaceType = TileSurfaceType.Water;
+            tile.movementSpeedMultiplier = 0.88f;
+        }
+        else if (heightLevel > 0)
+        {
+            tile.surfaceType = TileSurfaceType.Stone;
+            tile.movementSpeedMultiplier = 1.06f;
+        }
+        else
+        {
+            tile.surfaceType = TileSurfaceType.Grass;
+            tile.movementSpeedMultiplier = 1f;
         }
     }
 

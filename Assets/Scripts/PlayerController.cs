@@ -10,6 +10,13 @@ public class PlayerController : MonoBehaviour
     public float runSpeed = 6f;
     public float tiredSpeedMultiplier = 0.4f;
 
+    [Header("Surface Movement")]
+    public LayerMask groundMask = ~0;
+    public float surfaceCheckExtra = 0.5f;
+
+    private float currentSurfaceSpeedMultiplier = 1f;
+    private ArenaTile currentTile;
+
     [Header("Jump")]
     public float jumpForce = 7f;
     public float groundCheckExtra = 0.15f;
@@ -26,6 +33,9 @@ public class PlayerController : MonoBehaviour
     public float knockbackControlLockTime = 0.35f;
     public bool resetHorizontalVelocityOnKnockback = true;
     public bool debugKnockback = true;
+
+    public float maxKnockbackHorizontalSpeed = 8f;
+    public float maxKnockbackVerticalSpeed = 4f;
 
     [Header("Debug")]
     public bool enableDebugLog = false;
@@ -148,14 +158,14 @@ public class PlayerController : MonoBehaviour
         {
             knockbackTimer -= Time.fixedDeltaTime;
             HandleJump();
-            TickStats(false);
+            TickStats(false, false);
             SetMovementFlags(false, false);
             return;
         }
 
         HandleMove();
         HandleJump();
-        TickStats(IsMoving);
+        TickStats(IsMoving, IsRunning);
     }
 
     private void HandleMove()
@@ -163,7 +173,22 @@ public class PlayerController : MonoBehaviour
         Vector2 input = moveAction.ReadValue<Vector2>();
 
         bool movingNow = input.sqrMagnitude > 0.01f;
-        bool runningNow = runAction.IsPressed() && movingNow;
+        bool wantsRun = runAction.IsPressed() && movingNow;
+
+        bool runningNow = wantsRun;
+
+        if (stats != null)
+        {
+            if (wantsRun && !stats.CanStartRun() && !IsRunning)
+            {
+                runningNow = false;
+            }
+
+            if (wantsRun && IsRunning && !stats.CanKeepRunning())
+            {
+                runningNow = false;
+            }
+        }
 
         SetMovementFlags(movingNow, runningNow);
 
@@ -177,15 +202,13 @@ public class PlayerController : MonoBehaviour
         camRight.Normalize();
 
         Vector3 direction = (camRight * input.x + camForward * input.y).normalized;
+
+        UpdateCurrentSurface();
+
         float currentSpeed = runningNow ? runSpeed : walkSpeed;
+        currentSpeed *= currentSurfaceSpeedMultiplier;
 
-        float speedMultiplier = 1f;
-        if (stats != null && !stats.HasStamina())
-        {
-            speedMultiplier = tiredSpeedMultiplier;
-        }
-
-        Vector3 newPosition = rb.position + direction * currentSpeed * speedMultiplier * Time.fixedDeltaTime;
+        Vector3 newPosition = rb.position + direction * currentSpeed * Time.fixedDeltaTime;
         rb.MovePosition(newPosition);
     }
 
@@ -260,28 +283,48 @@ public class PlayerController : MonoBehaviour
 
         rb.AddForce(direction * force + Vector3.up * upForce, ForceMode.VelocityChange);
 
+        ClampKnockbackVelocity();
+
         if (debugKnockback)
         {
             Debug.Log("PlayerController knockback applied. Direction: " + direction + ", force: " + force + ", upForce: " + upForce, this);
         }
     }
 
+    private void ClampKnockbackVelocity()
+    {
+        Vector3 velocity = GetRigidbodyVelocity();
+
+        Vector3 horizontalVelocity = new Vector3(velocity.x, 0f, velocity.z);
+
+        if (horizontalVelocity.magnitude > maxKnockbackHorizontalSpeed)
+        {
+            horizontalVelocity = horizontalVelocity.normalized * maxKnockbackHorizontalSpeed;
+        }
+
+        velocity.x = horizontalVelocity.x;
+        velocity.z = horizontalVelocity.z;
+        velocity.y = Mathf.Min(velocity.y, maxKnockbackVerticalSpeed);
+
+        SetRigidbodyVelocity(velocity);
+    }
+
     private Vector3 GetRigidbodyVelocity()
     {
-#if UNITY_6000_0_OR_NEWER
-        return rb.linearVelocity;
-#else
-        return rb.velocity;
-#endif
+        #if UNITY_6000_0_OR_NEWER
+            return rb.linearVelocity;
+        #else
+            return rb.velocity;
+        #endif
     }
 
     private void SetRigidbodyVelocity(Vector3 velocity)
     {
-#if UNITY_6000_0_OR_NEWER
-        rb.linearVelocity = velocity;
-#else
-        rb.velocity = velocity;
-#endif
+        #if UNITY_6000_0_OR_NEWER
+            rb.linearVelocity = velocity;
+        #else
+            rb.velocity = velocity;
+        #endif
     }
 
     private void SetMovementFlags(bool moving, bool running)
@@ -295,15 +338,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void TickStats(bool moving)
+    private void TickStats(bool moving, bool running)
     {
         if (stats == null)
         {
             return;
         }
 
-        stats.isMoving = moving;
-        stats.TickStamina(Time.fixedDeltaTime);
+        stats.TickStamina(Time.fixedDeltaTime, moving, running);
     }
 
     private void DebugTick(float deltaTime)
@@ -334,5 +376,40 @@ public class PlayerController : MonoBehaviour
                 ? " | stamina: " + stats.stamina.ToString("0.0") + "/" + stats.staminaMax.ToString("0.0")
                 : " | stamina: (no PlayerStats)")
         );
+    }
+
+    private void UpdateCurrentSurface()
+    {
+        currentSurfaceSpeedMultiplier = 1f;
+        currentTile = null;
+
+        if (col == null)
+        {
+            return;
+        }
+
+        Vector3 origin = col.bounds.center;
+        float rayLength = col.bounds.extents.y + surfaceCheckExtra;
+
+        if (!Physics.Raycast(
+                origin,
+                Vector3.down,
+                out RaycastHit hit,
+                rayLength,
+                groundMask,
+                QueryTriggerInteraction.Ignore))
+        {
+            return;
+        }
+
+        ArenaTile tile = hit.collider.GetComponentInParent<ArenaTile>();
+
+        if (tile == null)
+        {
+            return;
+        }
+
+        currentTile = tile;
+        currentSurfaceSpeedMultiplier = Mathf.Max(0.1f, tile.movementSpeedMultiplier);
     }
 }

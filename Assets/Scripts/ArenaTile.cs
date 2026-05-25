@@ -1,6 +1,13 @@
 using System.Collections;
 using UnityEngine;
 
+public enum TileSurfaceType
+{
+    Water,
+    Grass,
+    Stone
+}
+
 [RequireComponent(typeof(Collider))]
 public class ArenaTile : MonoBehaviour
 {
@@ -18,6 +25,10 @@ public class ArenaTile : MonoBehaviour
     public Material warningMaterial;
 
     private Collider tileCollider;
+
+    [Header("Surface")]
+    public TileSurfaceType surfaceType = TileSurfaceType.Grass;
+    public float movementSpeedMultiplier = 1f;
 
     private void Awake()
     {

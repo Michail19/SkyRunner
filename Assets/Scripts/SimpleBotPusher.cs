@@ -18,6 +18,8 @@ public class SimpleBotPusher : MonoBehaviour
     public float attackCooldown = 1.2f;
     public float knockbackForce = 9f;
     public float knockbackUpForce = 1.2f;
+    public float maxAttackHeightDifference = 1.1f;
+    public float attackAngle = 90f;
 
     [Header("Falling")]
     public float destroyY = -10f;
@@ -131,12 +133,41 @@ public class SimpleBotPusher : MonoBehaviour
             isMoving = true;
         }
 
-        if (distance <= attackDistance)
+        if (CanAttackPlayer(direction, distance))
         {
             TryPushPlayer(direction);
         }
 
         UpdateAnimation();
+    }
+
+    private bool CanAttackPlayer(Vector3 direction, float horizontalDistance)
+    {
+        if (player == null)
+        {
+            return false;
+        }
+
+        if (horizontalDistance > attackDistance)
+        {
+            return false;
+        }
+
+        float heightDifference = Mathf.Abs(player.position.y - transform.position.y);
+
+        if (heightDifference > maxAttackHeightDifference)
+        {
+            return false;
+        }
+
+        float angleToPlayer = Vector3.Angle(transform.forward, direction);
+
+        if (angleToPlayer > attackAngle * 0.5f)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private void MoveToPlayer(Vector3 direction)
