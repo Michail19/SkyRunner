@@ -18,6 +18,12 @@ public class MenuController : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1f;
+        GamePauseState.IsPaused = false;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         SetupSensitivity();
         SetupResolutionDropdown();
         SetupQualityDropdown();
