@@ -476,7 +476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6a5c73cc0c5eb74188f3434fe094f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArenaGenerator
-  tilePrefab: {fileID: 0}
+  tilePrefab: {fileID: 8103400878820454971, guid: 62af5a900c366f943b2e99ac6542eb17, type: 3}
   tileParent: {fileID: 0}
   gridSize: 18
   tileSize: 2
