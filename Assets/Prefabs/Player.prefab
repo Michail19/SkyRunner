@@ -1030,6 +1030,7 @@ GameObject:
   - component: {fileID: 6060255616378125088}
   - component: {fileID: 8752281347209532189}
   - component: {fileID: 359700515836642226}
+  - component: {fileID: 377055868232838723}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1145,7 +1146,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -1288,6 +1289,10 @@ MonoBehaviour:
   walkSpeed: 3
   runSpeed: 6
   tiredSpeedMultiplier: 0.4
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  surfaceCheckExtra: 0.5
   jumpForce: 7
   groundCheckExtra: 0.15
   cameraTransform: {fileID: 8358104030809950934}
@@ -1297,6 +1302,8 @@ MonoBehaviour:
   knockbackControlLockTime: 0.35
   resetHorizontalVelocityOnKnockback: 1
   debugKnockback: 1
+  maxKnockbackHorizontalSpeed: 8
+  maxKnockbackVerticalSpeed: 4
   enableDebugLog: 0
   debugLogEverySeconds: 0.5
   enableKnockbackTestKey: 1
@@ -1315,9 +1322,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   staminaMax: 100
   stamina: 100
-  drainPerSecond: 10
+  runDrainPerSecond: 8
   regenPerSecond: 15
+  regenDelayAfterRun: 0.6
+  minStaminaToStartRun: 8
+  minStaminaToKeepRun: 0.5
   isMoving: 0
+  isRunning: 0
 --- !u!114 &8752281347209532189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1354,6 +1365,29 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!136 &377055868232838723
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4083804446430700129}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5000001
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4286234650372728195
 GameObject:
   m_ObjectHideFlags: 0
