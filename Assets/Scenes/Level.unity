@@ -413,14 +413,6 @@ PrefabInstance:
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 1554420653}
-    - target: {fileID: 4358416296173399321, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
-      propertyPath: groundCheckOffset
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 4358416296173399321, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
-      propertyPath: groundCheckRadius
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6605654234856010128, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1
