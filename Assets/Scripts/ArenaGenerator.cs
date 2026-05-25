@@ -3,8 +3,12 @@ using UnityEngine;
 
 public class ArenaGenerator : MonoBehaviour
 {
-    [Header("Tile")]
-    public ArenaTile tilePrefab;
+    [Header("Tile Prefabs")]
+    public ArenaTile lowTilePrefab;      // -1: вода / земля / низина
+    public ArenaTile grassTilePrefab;    //  0: трава / обычная земля
+    public ArenaTile stoneTilePrefab;    //  1: камень / возвышенность
+
+    [Header("Parent")]
     public Transform tileParent;
 
     [Header("Grid")]
@@ -20,14 +24,18 @@ public class ArenaGenerator : MonoBehaviour
     public float heightStep = 0.35f;
     public float noiseScale = 0.18f;
 
+    [Header("Noise Thresholds")]
+    [Range(0f, 1f)] public float lowThreshold = 0.35f;
+    [Range(0f, 1f)] public float highThreshold = 0.68f;
+
     [Header("Safe Center")]
     public int protectedCenterSize = 2;
 
+    [Header("Collider")]
+    public float colliderOverlap = 0.02f;
+
     [Header("Generated Tiles")]
     public List<ArenaTile> tiles = new List<ArenaTile>();
-
-    [Header("Collider")]
-    public float colliderOverlap = 0.05f;
 
     private void Start()
     {
@@ -39,9 +47,9 @@ public class ArenaGenerator : MonoBehaviour
     {
         ClearArena();
 
-        if (tilePrefab == null)
+        if (grassTilePrefab == null)
         {
-            Debug.LogError("ArenaGenerator: tilePrefab is not assigned.", this);
+            Debug.LogError("ArenaGenerator: grassTilePrefab is not assigned.", this);
             return;
         }
 
@@ -62,7 +70,6 @@ public class ArenaGenerator : MonoBehaviour
                     Mathf.Pow(z - centerOffset, 2)
                 );
 
-                // Делаем не квадратную карту, а островную форму.
                 if (distanceFromCenter > radius)
                 {
                     continue;
@@ -70,25 +77,7 @@ public class ArenaGenerator : MonoBehaviour
 
                 bool isProtected = IsProtectedCenter(x, z);
 
-                int heightLevel = 0;
-
-                // Центральные 4 клетки всегда плоские.
-                if (useHeightVariation && !isProtected)
-                {
-                    float noise = Mathf.PerlinNoise(
-                        (x + 1000) * noiseScale,
-                        (z + 1000) * noiseScale
-                    );
-
-                    if (noise < 0.35f)
-                    {
-                        heightLevel = -1;
-                    }
-                    else if (noise > 0.68f)
-                    {
-                        heightLevel = 1;
-                    }
-                }
+                int heightLevel = GetHeightLevel(x, z, isProtected);
 
                 float worldX = (x - centerOffset) * tileSize;
                 float worldZ = (z - centerOffset) * tileSize;
@@ -96,39 +85,113 @@ public class ArenaGenerator : MonoBehaviour
 
                 Vector3 position = new Vector3(worldX, worldY, worldZ);
 
+                ArenaTile selectedPrefab = GetPrefabForHeightLevel(heightLevel);
+
                 ArenaTile tile = Instantiate(
-                    tilePrefab,
+                    selectedPrefab,
                     position,
                     Quaternion.identity,
                     tileParent
                 );
 
-                tile.name = $"ArenaTile_{x}_{z}";
+                tile.name = $"ArenaTile_{x}_{z}_{heightLevel}";
+
+                // Важно: масштабируем prefab, но collider задаём в локальных координатах.
+                //tile.transform.localScale = new Vector3(tileSize, tileThickness, tileSize);
+
                 tile.transform.localScale = Vector3.one;
-                tile.transform.localScale = new Vector3(tileSize, tileThickness, tileSize);
 
-                // BoxCollider boxCollider = tile.GetComponent<BoxCollider>();
+                BoxCollider boxCollider = tile.GetComponent<BoxCollider>();
 
-                //if (boxCollider != null)
-                //{
-                //    boxCollider.size = new Vector3(
-                //        tileSize + colliderOverlap,
-                //        tileThickness,
-                //        tileSize + colliderOverlap
-                //    );
+                if (boxCollider != null)
+                {
+                    boxCollider.size = new Vector3(
+                        tileSize + colliderOverlap,
+                        tileThickness,
+                        tileSize + colliderOverlap
+                    );
 
-                //    boxCollider.center = new Vector3(
-                //        0f,
-                //        -tileThickness / 2f,
-                //        0f
-                //    );
-                //}
+                    boxCollider.center = new Vector3(
+                        0f,
+                        -tileThickness / 2f,
+                        0f
+                    );
+                }
+
+                ConfigureCollider(tile);
 
                 tile.Setup(isProtected);
 
                 tiles.Add(tile);
             }
         }
+    }
+
+    private int GetHeightLevel(int x, int z, bool isProtected)
+    {
+        // Центральные 4 клетки всегда плоские и травяные.
+        if (isProtected)
+        {
+            return 0;
+        }
+
+        if (!useHeightVariation)
+        {
+            return 0;
+        }
+
+        float noise = Mathf.PerlinNoise(
+            (x + 1000) * noiseScale,
+            (z + 1000) * noiseScale
+        );
+
+        if (noise < lowThreshold)
+        {
+            return -1;
+        }
+
+        if (noise > highThreshold)
+        {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    private ArenaTile GetPrefabForHeightLevel(int heightLevel)
+    {
+        if (heightLevel < 0 && lowTilePrefab != null)
+        {
+            return lowTilePrefab;
+        }
+
+        if (heightLevel > 0 && stoneTilePrefab != null)
+        {
+            return stoneTilePrefab;
+        }
+
+        return grassTilePrefab;
+    }
+
+    private void ConfigureCollider(ArenaTile tile)
+    {
+        BoxCollider boxCollider = tile.GetComponent<BoxCollider>();
+
+        if (boxCollider == null)
+        {
+            return;
+        }
+
+        // Так collider не станет в 2 раза больше из-за transform.localScale.
+        float localOverlap = colliderOverlap / Mathf.Max(0.01f, tileSize);
+
+        boxCollider.size = new Vector3(
+            1f + localOverlap,
+            1f,
+            1f + localOverlap
+        );
+
+        boxCollider.center = Vector3.zero;
     }
 
     [ContextMenu("Clear Arena")]

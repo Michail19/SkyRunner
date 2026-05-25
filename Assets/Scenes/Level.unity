@@ -1344,7 +1344,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6a5c73cc0c5eb74188f3434fe094f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArenaGenerator
-  tilePrefab: {fileID: 8103400878820454971, guid: 62af5a900c366f943b2e99ac6542eb17, type: 3}
+  lowTilePrefab: {fileID: 2315060059932382169, guid: d3f7d0e88439ad64f8e8d242239f867f, type: 3}
+  grassTilePrefab: {fileID: 2480504843597964247, guid: 0bc94a387ccce714b9ce8f8b8de33659, type: 3}
+  stoneTilePrefab: {fileID: 1041395105307756445, guid: 88011f857e579ab4cb66bedee35fdde9, type: 3}
   tileParent: {fileID: 0}
   gridSize: 18
   tileSize: 2
@@ -1353,9 +1355,11 @@ MonoBehaviour:
   useHeightVariation: 1
   heightStep: 0.35
   noiseScale: 0.18
+  lowThreshold: 0.35
+  highThreshold: 0.68
   protectedCenterSize: 2
-  tiles: []
   colliderOverlap: 0
+  tiles: []
 --- !u!1 &1933893480
 GameObject:
   m_ObjectHideFlags: 0
