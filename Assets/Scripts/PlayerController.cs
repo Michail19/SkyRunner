@@ -63,13 +63,6 @@ public class PlayerController : MonoBehaviour
     public bool enableKnockbackTestKey = true;
     public KeyCode knockbackTestKey = KeyCode.K;
 
-    [Header("Step Assist")]
-    public bool useStepAssist = true;
-    public float stepCheckDistance = 0.45f;
-    public float stepHeight = 0.45f;
-    public float stepUpSpeed = 8f;
-    public LayerMask stepMask = ~0;
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -215,55 +208,8 @@ public class PlayerController : MonoBehaviour
         float currentSpeed = runningNow ? runSpeed : walkSpeed;
         currentSpeed *= currentSurfaceSpeedMultiplier;
 
-        if (useStepAssist && direction.sqrMagnitude > 0.01f && isGrounded)
-        {
-            TryStepAssist(direction);
-        }
-
         Vector3 newPosition = rb.position + direction * currentSpeed * Time.fixedDeltaTime;
         rb.MovePosition(newPosition);
-    }
-
-    private void TryStepAssist(Vector3 direction)
-    {
-        if (col == null)
-        {
-            return;
-        }
-
-        Vector3 lowerOrigin = col.bounds.center;
-        lowerOrigin.y = col.bounds.min.y + 0.15f;
-
-        bool lowerHit = Physics.Raycast(
-            lowerOrigin,
-            direction,
-            stepCheckDistance,
-            stepMask,
-            QueryTriggerInteraction.Ignore
-        );
-
-        if (!lowerHit)
-        {
-            return;
-        }
-
-        Vector3 upperOrigin = lowerOrigin + Vector3.up * stepHeight;
-
-        bool upperHit = Physics.Raycast(
-            upperOrigin,
-            direction,
-            stepCheckDistance,
-            stepMask,
-            QueryTriggerInteraction.Ignore
-        );
-
-        if (upperHit)
-        {
-            return;
-        }
-
-        Vector3 raisedPosition = rb.position + Vector3.up * stepUpSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(raisedPosition);
     }
 
     private void HandleJump()

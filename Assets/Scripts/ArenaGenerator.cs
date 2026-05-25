@@ -120,7 +120,7 @@ public class ArenaGenerator : MonoBehaviour
                     );
                 }
 
-                //ConfigureCollider(tile);
+                ConfigureCollider(tile);
 
                 tile.Setup(isProtected);
 
