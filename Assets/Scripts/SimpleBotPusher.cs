@@ -32,6 +32,20 @@ public class SimpleBotPusher : MonoBehaviour
 
     private bool isMoving;
 
+    [Header("Hole Falling")]
+    public ArenaGenerator arenaGenerator;
+    public bool canFallIntoHoles = true;
+    public float holeDetectionRadius = 3.2f;
+    public float holeFallDistance = 1.6f;
+    public float holePullSpeed = 5f;
+    public float holeFallChance = 0.35f;
+    public float holeCheckInterval = 0.35f;
+    public float holeCommitDistance = 0.4f;
+
+    private bool isFallingIntoHole;
+    private Vector3 targetHolePosition;
+    private float nextHoleCheckTime;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -69,6 +83,17 @@ public class SimpleBotPusher : MonoBehaviour
         {
             Destroy(gameObject);
             return;
+        }
+
+        if (canFallIntoHoles)
+        {
+            HandleHoleFall();
+
+            if (isFallingIntoHole)
+            {
+                UpdateAnimation();
+                return;
+            }
         }
 
         Vector3 toPlayer = player.position - transform.position;
@@ -185,5 +210,137 @@ public class SimpleBotPusher : MonoBehaviour
     #else
         return rb.velocity;
     #endif
+    }
+
+    private void HandleHoleFall()
+    {
+        if (arenaGenerator == null)
+        {
+            return;
+        }
+
+        if (isFallingIntoHole)
+        {
+            MoveIntoHole();
+            return;
+        }
+
+        if (Time.time < nextHoleCheckTime)
+        {
+            return;
+        }
+
+        nextHoleCheckTime = Time.time + holeCheckInterval;
+
+        ArenaTile nearestHole = FindNearestDestroyedTile();
+
+        if (nearestHole == null)
+        {
+            return;
+        }
+
+        float distanceToHole = Vector3.Distance(
+            new Vector3(transform.position.x, 0f, transform.position.z),
+            new Vector3(nearestHole.transform.position.x, 0f, nearestHole.transform.position.z)
+        );
+
+        if (distanceToHole > holeFallDistance)
+        {
+            return;
+        }
+
+        if (Random.value > holeFallChance)
+        {
+            return;
+        }
+
+        StartFallingIntoHole(nearestHole.transform.position);
+    }
+
+    private ArenaTile FindNearestDestroyedTile()
+    {
+        ArenaTile nearestTile = null;
+        float nearestDistance = float.MaxValue;
+
+        foreach (ArenaTile tile in arenaGenerator.tiles)
+        {
+            if (tile == null || !tile.isDestroyed)
+            {
+                continue;
+            }
+
+            float distance = Vector3.Distance(
+                new Vector3(transform.position.x, 0f, transform.position.z),
+                new Vector3(tile.transform.position.x, 0f, tile.transform.position.z)
+            );
+
+            if (distance > holeDetectionRadius)
+            {
+                continue;
+            }
+
+            if (distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                nearestTile = tile;
+            }
+        }
+
+        return nearestTile;
+    }
+
+    private void StartFallingIntoHole(Vector3 holePosition)
+    {
+        isFallingIntoHole = true;
+
+        targetHolePosition = new Vector3(
+            holePosition.x,
+            transform.position.y,
+            holePosition.z
+        );
+
+        // Чтобы бот не цеплялся за край во время падения.
+        Collider botCollider = GetComponent<Collider>();
+
+        if (botCollider != null)
+        {
+            botCollider.enabled = false;
+        }
+    }
+
+    private void MoveIntoHole()
+    {
+        Vector3 currentPosition = rb.position;
+
+        Vector3 targetPosition = new Vector3(
+            targetHolePosition.x,
+            currentPosition.y,
+            targetHolePosition.z
+        );
+
+        Vector3 newPosition = Vector3.MoveTowards(
+            currentPosition,
+            targetPosition,
+            holePullSpeed * Time.fixedDeltaTime
+        );
+
+        rb.MovePosition(newPosition);
+
+        Vector3 flatDelta = new Vector3(
+            targetPosition.x - newPosition.x,
+            0f,
+            targetPosition.z - newPosition.z
+        );
+
+        if (flatDelta.magnitude <= holeCommitDistance)
+        {
+            rb.useGravity = true;
+
+        #if UNITY_6000_0_OR_NEWER
+            rb.linearVelocity = new Vector3(0f, -4f, 0f);
+        #else
+            rb.velocity = new Vector3(0f, -4f, 0f);
+        #endif
+        }
     }
 }

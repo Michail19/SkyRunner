@@ -90,6 +90,7 @@ public class BotSpawner : MonoBehaviour
             );
 
             bot.player = player;
+            bot.arenaGenerator = arenaGenerator;
 
             aliveBots.Add(bot);
         }
