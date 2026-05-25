@@ -17,6 +17,8 @@ public class MenuController : MonoBehaviour
     public TMP_Dropdown difficultyDropdown;
     public Slider volumeSlider;
 
+    public GameObject instructionsPanel;
+
     private Resolution[] resolutions;
 
     void Start()
@@ -28,6 +30,16 @@ public class MenuController : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        if (settingsPanel != null)
+        {
+            settingsPanel.SetActive(false);
+        }
+
+        if (instructionsPanel != null)
+        {
+            instructionsPanel.SetActive(false);
+        }
 
         SetupSensitivity();
         SetupVolume();
@@ -178,5 +190,30 @@ public class MenuController : MonoBehaviour
         GameDifficulty selectedDifficulty = (GameDifficulty)index;
         GameSettings.ApplyDifficulty(selectedDifficulty);
         GameSettings.Save();
+    }
+
+    public void OpenInstructions()
+    {
+        mainPanel.SetActive(false);
+
+        if (settingsPanel != null)
+        {
+            settingsPanel.SetActive(false);
+        }
+
+        if (instructionsPanel != null)
+        {
+            instructionsPanel.SetActive(true);
+        }
+    }
+
+    public void CloseInstructions()
+    {
+        if (instructionsPanel != null)
+        {
+            instructionsPanel.SetActive(false);
+        }
+
+        mainPanel.SetActive(true);
     }
 }

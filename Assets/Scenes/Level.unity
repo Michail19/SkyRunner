@@ -1385,7 +1385,7 @@ MonoBehaviour:
   startDelay: 3
   spawnInterval: 8
   botsPerWave: 1
-  maxAliveBots: 5
+  maxAliveBots: 10
   spawnHeightOffset: 2
   minDistanceFromPlayer: 8
   edgeSpawnPercent: 0.55
@@ -1394,6 +1394,9 @@ MonoBehaviour:
   maxBotsPerWave: 3
   maxAliveBotsLimit: 10
   minSpawnInterval: 3
+  autoScaleWithArena: 1
+  minMaxAliveBots: 4
+  maxMaxAliveBots: 15
 --- !u!4 &676203177
 Transform:
   m_ObjectHideFlags: 0
@@ -1716,6 +1719,9 @@ MonoBehaviour:
   itemsToSpawn: 10
   itemHeightOffset: 1
   minDistanceFromCenter: 16
+  autoScaleWithArena: 1
+  minItems: 3
+  maxItems: 8
 --- !u!4 &1115165011
 Transform:
   m_ObjectHideFlags: 0
@@ -3169,6 +3175,9 @@ MonoBehaviour:
   maxTilesPerWave: 4
   minPauseAfterCollapse: 0.5
   minDistanceFromPlayer: 3
+  autoScaleWithArena: 1
+  minTilesPerWave: 1
+  maxTilesPerWaveLimit: 10
 --- !u!114 &1933893483
 MonoBehaviour:
   m_ObjectHideFlags: 0
