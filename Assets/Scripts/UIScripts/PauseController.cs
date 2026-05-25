@@ -4,12 +4,16 @@ using UnityEngine.SceneManagement;
 public class PauseController : MonoBehaviour
 {
     public GameObject pausePanel;
+    public GameManager gameManager;
 
     private bool isPaused;
 
-    void Start()
+    private void Start()
     {
-        pausePanel.SetActive(false);
+        if (pausePanel != null)
+        {
+            pausePanel.SetActive(false);
+        }
 
         isPaused = false;
         GamePauseState.IsPaused = false;
@@ -18,20 +22,33 @@ public class PauseController : MonoBehaviour
         Cursor.visible = false;
     }
 
-    void Update()
+    private void Update()
     {
+        if (gameManager != null && gameManager.isGameOver)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused)
+            {
                 Resume();
+            }
             else
+            {
                 Pause();
+            }
         }
     }
 
     public void Pause()
     {
-        pausePanel.SetActive(true);
+        if (pausePanel != null)
+        {
+            pausePanel.SetActive(true);
+        }
+
         Time.timeScale = 0f;
 
         isPaused = true;
@@ -43,7 +60,11 @@ public class PauseController : MonoBehaviour
 
     public void Resume()
     {
-        pausePanel.SetActive(false);
+        if (pausePanel != null)
+        {
+            pausePanel.SetActive(false);
+        }
+
         Time.timeScale = 1f;
 
         isPaused = false;
@@ -53,6 +74,19 @@ public class PauseController : MonoBehaviour
         Cursor.visible = false;
     }
 
+    public void RestartGame()
+    {
+        Time.timeScale = 1f;
+
+        isPaused = false;
+        GamePauseState.IsPaused = false;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     public void LoadMenu()
     {
         Time.timeScale = 1f;
@@ -60,12 +94,20 @@ public class PauseController : MonoBehaviour
         isPaused = false;
         GamePauseState.IsPaused = false;
 
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         SceneManager.LoadScene("Menu");
     }
 
     public void ExitGame()
     {
+        Time.timeScale = 1f;
+
+        isPaused = false;
+        GamePauseState.IsPaused = false;
+
         Application.Quit();
-        Debug.Log("Выход из игры");
+        Debug.Log("Exit game");
     }
 }

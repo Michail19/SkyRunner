@@ -18,12 +18,10 @@ public class GameManager : MonoBehaviour
 
     private float survivalTime;
 
-    [Header("Disable On Game Over")]
-    public MonoBehaviour[] scriptsToDisableOnGameOver;
-
     private void Start()
     {
         Time.timeScale = 1f;
+        GamePauseState.IsPaused = false;
 
         if (gameOverPanel != null)
         {
@@ -50,6 +48,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        if (!isGameOver)
+        {
+            return;
+        }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     private void UpdateTimerUI()
     {
         if (timerText == null)
@@ -57,45 +66,20 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        timerText.text = "Время: " + FormatTime(survivalTime);
+        timerText.text = "Time: " + FormatTime(survivalTime);
     }
 
     private void GameOver()
     {
-        isGameOver = true;
-
-        GamePauseState.IsPaused = true;
-
-        if (scriptsToDisableOnGameOver != null)
-        {
-            foreach (MonoBehaviour script in scriptsToDisableOnGameOver)
-            {
-                if (script != null)
-                {
-                    script.enabled = false;
-                }
-            }
-        }
-
-        if (resultText != null)
-        {
-            resultText.text = "Вы продержались: " + FormatTime(survivalTime);
-        }
-
-        if (gameOverPanel != null)
-        {
-            gameOverPanel.SetActive(true);
-        }
-
-        Time.timeScale = 0f;
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-
-        Debug.Log("Game Over. Survival time: " + FormatTime(survivalTime));
+        ShowEndScreen("Game Over\nTime: " + FormatTime(survivalTime));
     }
 
     public void WinGame()
+    {
+        ShowEndScreen("Victory!\nTime: " + FormatTime(survivalTime));
+    }
+
+    private void ShowEndScreen(string message)
     {
         if (isGameOver)
         {
@@ -107,7 +91,7 @@ public class GameManager : MonoBehaviour
 
         if (resultText != null)
         {
-            resultText.text = "Victory!\nTime: " + FormatTime(survivalTime);
+            resultText.text = message;
         }
 
         if (gameOverPanel != null)
@@ -119,16 +103,6 @@ public class GameManager : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-        Debug.Log("Victory. Time: " + FormatTime(survivalTime));
-    }
-
-    private string FormatTime(float time)
-    {
-        int minutes = Mathf.FloorToInt(time / 60f);
-        int seconds = Mathf.FloorToInt(time % 60f);
-
-        return $"{minutes:00}:{seconds:00}";
     }
 
     public void RestartGame()
@@ -140,6 +114,34 @@ public class GameManager : MonoBehaviour
         Cursor.visible = false;
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void LoadMenu()
+    {
+        Time.timeScale = 1f;
+        GamePauseState.IsPaused = false;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        SceneManager.LoadScene("Menu");
+    }
+
+    public void ExitGame()
+    {
+        Time.timeScale = 1f;
+        GamePauseState.IsPaused = false;
+
+        Application.Quit();
+        Debug.Log("Exit game");
+    }
+
+    private string FormatTime(float time)
+    {
+        int minutes = Mathf.FloorToInt(time / 60f);
+        int seconds = Mathf.FloorToInt(time % 60f);
+
+        return $"{minutes:00}:{seconds:00}";
     }
 
     public float GetSurvivalTime()
