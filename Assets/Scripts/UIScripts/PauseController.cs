@@ -1,12 +1,34 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class PauseController : MonoBehaviour
 {
+    [Header("References")]
     public GameObject pausePanel;
     public GameManager gameManager;
 
     private bool isPaused;
+    private InputAction pauseAction;
+
+    private void Awake()
+    {
+        pauseAction = new InputAction(
+            "Pause",
+            InputActionType.Button,
+            "<Keyboard>/escape"
+        );
+    }
+
+    private void OnEnable()
+    {
+        pauseAction.Enable();
+    }
+
+    private void OnDisable()
+    {
+        pauseAction.Disable();
+    }
 
     private void Start()
     {
@@ -14,9 +36,15 @@ public class PauseController : MonoBehaviour
         {
             pausePanel.SetActive(false);
         }
+        else
+        {
+            Debug.LogError("PauseController: Pause Panel is not assigned.", this);
+        }
 
         isPaused = false;
         GamePauseState.IsPaused = false;
+
+        Time.timeScale = 1f;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -29,16 +57,21 @@ public class PauseController : MonoBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (pauseAction.WasPressedThisFrame())
         {
-            if (isPaused)
-            {
-                Resume();
-            }
-            else
-            {
-                Pause();
-            }
+            TogglePause();
+        }
+    }
+
+    public void TogglePause()
+    {
+        if (isPaused)
+        {
+            Resume();
+        }
+        else
+        {
+            Pause();
         }
     }
 
