@@ -26,6 +26,9 @@ public class ArenaGenerator : MonoBehaviour
     [Header("Generated Tiles")]
     public List<ArenaTile> tiles = new List<ArenaTile>();
 
+    [Header("Collider")]
+    public float colliderOverlap = 0.05f;
+
     private void Start()
     {
         Generate();
@@ -101,7 +104,25 @@ public class ArenaGenerator : MonoBehaviour
                 );
 
                 tile.name = $"ArenaTile_{x}_{z}";
-                tile.transform.localScale = new Vector3(tileSize, tileThickness, tileSize);
+                tile.transform.localScale = Vector3.one;
+
+                BoxCollider boxCollider = tile.GetComponent<BoxCollider>();
+
+                if (boxCollider != null)
+                {
+                    boxCollider.size = new Vector3(
+                        tileSize + colliderOverlap,
+                        tileThickness,
+                        tileSize + colliderOverlap
+                    );
+
+                    boxCollider.center = new Vector3(
+                        0f,
+                        -tileThickness / 2f,
+                        0f
+                    );
+                }
+
                 tile.Setup(isProtected);
 
                 tiles.Add(tile);
