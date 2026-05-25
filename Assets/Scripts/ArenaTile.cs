@@ -8,6 +8,9 @@ public class ArenaTile : MonoBehaviour
     public bool isProtected;
     public bool isDestroyed;
 
+    [Header("Gameplay")]
+    public bool hasObjectiveItem;
+
     [Header("Visual")]
     public Renderer tileRenderer;
     public Material normalMaterial;
