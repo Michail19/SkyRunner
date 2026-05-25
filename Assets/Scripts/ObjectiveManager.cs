@@ -7,7 +7,7 @@ public class ObjectiveManager : MonoBehaviour
     [Header("References")]
     public ArenaGenerator arenaGenerator;
     public GameManager gameManager;
-    public CollectibleItem itemPrefab;
+    public CollectibleItem[] itemPrefabs;
     public GameObject exitZoneObject;
 
     [Header("UI")]
@@ -34,7 +34,7 @@ public class ObjectiveManager : MonoBehaviour
 
     private void SpawnItems()
     {
-        if (arenaGenerator == null || itemPrefab == null)
+        if (arenaGenerator == null || itemPrefabs == null)
         {
             Debug.LogError("ObjectiveManager: missing references.", this);
             return;
@@ -75,8 +75,16 @@ public class ObjectiveManager : MonoBehaviour
 
             Vector3 position = tile.transform.position + Vector3.up * itemHeightOffset;
 
+            CollectibleItem selectedPrefab = GetRandomItemPrefab();
+
+            if (selectedPrefab == null)
+            {
+                Debug.LogError("ObjectiveManager: no valid item prefab found.", this);
+                return;
+            }
+
             CollectibleItem item = Instantiate(
-                itemPrefab,
+                selectedPrefab,
                 position,
                 Quaternion.identity
             );
@@ -86,6 +94,32 @@ public class ObjectiveManager : MonoBehaviour
         }
 
         UpdateUI();
+    }
+
+    private CollectibleItem GetRandomItemPrefab()
+    {
+        if (itemPrefabs == null || itemPrefabs.Length == 0)
+        {
+            return null;
+        }
+
+        List<CollectibleItem> validPrefabs = new List<CollectibleItem>();
+
+        foreach (CollectibleItem prefab in itemPrefabs)
+        {
+            if (prefab != null)
+            {
+                validPrefabs.Add(prefab);
+            }
+        }
+
+        if (validPrefabs.Count == 0)
+        {
+            return null;
+        }
+
+        int index = Random.Range(0, validPrefabs.Count);
+        return validPrefabs[index];
     }
 
     public void CollectItem(CollectibleItem item)

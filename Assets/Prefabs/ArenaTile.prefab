@@ -127,6 +127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ArenaTile
   isProtected: 0
   isDestroyed: 0
+  hasObjectiveItem: 0
   tileRenderer: {fileID: 3629044381369093298}
   normalMaterial: {fileID: 2100000, guid: c5ebb4b3df2d8e2498613bd3948c5d71, type: 2}
   protectedMaterial: {fileID: 2100000, guid: 5da641dcbe822244cae7ea7e202949a8, type: 2}

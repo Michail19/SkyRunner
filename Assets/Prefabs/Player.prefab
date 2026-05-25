@@ -1022,10 +1022,14 @@ GameObject:
   - component: {fileID: 6605654234856010128}
   - component: {fileID: 2153072171428555980}
   - component: {fileID: 366107360584905911}
+  - component: {fileID: 5376647639018288091}
   - component: {fileID: 9032323927673708778}
   - component: {fileID: 7318848549158990323}
   - component: {fileID: 8225211562714142003}
   - component: {fileID: 4358416296173399321}
+  - component: {fileID: 6060255616378125088}
+  - component: {fileID: 8752281347209532189}
+  - component: {fileID: 359700515836642226}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1107,6 +1111,23 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5376647639018288091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4083804446430700129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 979a374f9bb4dd54baaf03ccbc260366, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationController
+  animator: {fileID: 359700515836642226}
+  playerController: {fileID: 4358416296173399321}
+  playerRb: {fileID: 7318848549158990323}
+  playerCol: {fileID: 9032323927673708778}
+  groundCheckExtra: 0.15
 --- !u!65 &9032323927673708778
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1269,10 +1290,10 @@ MonoBehaviour:
   tiredSpeedMultiplier: 0.4
   jumpForce: 7
   groundCheckExtra: 0.15
-  cameraTransform: {fileID: 0}
+  cameraTransform: {fileID: 8358104030809950934}
   minPitch: -80
   maxPitch: 80
-  stats: {fileID: 0}
+  stats: {fileID: 6060255616378125088}
   knockbackControlLockTime: 0.35
   resetHorizontalVelocityOnKnockback: 1
   debugKnockback: 1
@@ -1280,6 +1301,59 @@ MonoBehaviour:
   debugLogEverySeconds: 0.5
   enableKnockbackTestKey: 1
   knockbackTestKey: 107
+--- !u!114 &6060255616378125088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4083804446430700129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6822f3b35f11057429a15cac0994fc99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  staminaMax: 100
+  stamina: 100
+  drainPerSecond: 10
+  regenPerSecond: 15
+  isMoving: 0
+--- !u!114 &8752281347209532189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4083804446430700129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad344c64c6d04c24892b4e2c5d42e94e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHUD
+  stats: {fileID: 6060255616378125088}
+  staminaText: {fileID: 0}
+--- !u!95 &359700515836642226
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4083804446430700129}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 2faa610713d3b3c439473daa55e8c60a, type: 3}
+  m_Controller: {fileID: 9100000, guid: c3522a2b5e18efc4fbff215a75d769e6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4286234650372728195
 GameObject:
   m_ObjectHideFlags: 0
@@ -1833,7 +1907,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: df81ddc38bae7e945a835735059fe898, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
