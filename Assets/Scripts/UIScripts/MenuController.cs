@@ -19,7 +19,7 @@ public class MenuController : MonoBehaviour
 
     public GameObject instructionsPanel;
 
-    private Resolution[] resolutions;
+    private List<Vector2Int> availableResolutions = new List<Vector2Int>();
 
     void Start()
     {
@@ -61,27 +61,75 @@ public class MenuController : MonoBehaviour
     {
         if (resolutionDropdown == null) return;
 
-        resolutions = Screen.resolutions;
+        availableResolutions.Clear();
         resolutionDropdown.ClearOptions();
 
-        List<string> options = new List<string>();
-        int currentResolutionIndex = 0;
+        Resolution[] unityResolutions = Screen.resolutions;
 
-        for (int i = 0; i < resolutions.Length; i++)
+        foreach (Resolution resolution in unityResolutions)
         {
-            string option = resolutions[i].width + "x" + resolutions[i].height;
-            options.Add(option);
+            AddResolutionIfUnique(resolution.width, resolution.height);
+        }
 
-            if (resolutions[i].width == Screen.currentResolution.width &&
-            resolutions[i].height == Screen.currentResolution.height)
+        // Fallback, если Unity в билде дала только 640x480 или пустой список.
+        if (availableResolutions.Count <= 1)
+        {
+            AddResolutionIfUnique(1280, 720);
+            AddResolutionIfUnique(1366, 768);
+            AddResolutionIfUnique(1600, 900);
+            AddResolutionIfUnique(1920, 1080);
+            AddResolutionIfUnique(2560, 1440);
+        }
+
+        List<string> options = new List<string>();
+        int currentIndex = 0;
+
+        for (int i = 0; i < availableResolutions.Count; i++)
+        {
+            Vector2Int resolution = availableResolutions[i];
+            options.Add(resolution.x + "x" + resolution.y);
+
+            if (resolution.x == Screen.width && resolution.y == Screen.height)
             {
-                currentResolutionIndex = i;
+                currentIndex = i;
             }
         }
 
         resolutionDropdown.AddOptions(options);
-        resolutionDropdown.value = currentResolutionIndex;
+        resolutionDropdown.SetValueWithoutNotify(currentIndex);
         resolutionDropdown.RefreshShownValue();
+
+        resolutionDropdown.onValueChanged.RemoveListener(SetResolution);
+        resolutionDropdown.onValueChanged.AddListener(SetResolution);
+    }
+
+    private void AddResolutionIfUnique(int width, int height)
+    {
+        if (width < 800 || height < 600)
+        {
+            return;
+        }
+
+        Vector2Int newResolution = new Vector2Int(width, height);
+
+        if (!availableResolutions.Contains(newResolution))
+        {
+            availableResolutions.Add(newResolution);
+        }
+    }
+
+    public void SetResolution(int index)
+    {
+        if (availableResolutions == null || availableResolutions.Count == 0) return;
+        if (index < 0 || index >= availableResolutions.Count) return;
+
+        Vector2Int selectedResolution = availableResolutions[index];
+
+        Screen.SetResolution(
+            selectedResolution.x,
+            selectedResolution.y,
+            Screen.fullScreen
+        );
     }
 
     void SetupQualityDropdown()
@@ -90,30 +138,27 @@ public class MenuController : MonoBehaviour
 
         qualityDropdown.ClearOptions();
         qualityDropdown.AddOptions(new List<string>(QualitySettings.names));
-        qualityDropdown.value = QualitySettings.GetQualityLevel();
+        qualityDropdown.SetValueWithoutNotify(QualitySettings.GetQualityLevel());
         qualityDropdown.RefreshShownValue();
+
+        qualityDropdown.onValueChanged.RemoveListener(SetQuality);
+        qualityDropdown.onValueChanged.AddListener(SetQuality);
     }
 
     void SetupFullscreenToggle()
     {
         if (fullscreenToggle == null) return;
 
-        fullscreenToggle.isOn = Screen.fullScreen;
+        fullscreenToggle.SetIsOnWithoutNotify(Screen.fullScreen);
+
+        fullscreenToggle.onValueChanged.RemoveListener(SetFullscreen);
+        fullscreenToggle.onValueChanged.AddListener(SetFullscreen);
     }
 
     public void SetSensitivity(float value)
     {
         GameSettings.mouseSensitivity = value;
         GameSettings.Save();
-    }
-
-    public void SetResolution(int index)
-    {
-        if (resolutions == null || resolutions.Length == 0) return;
-        if (index < 0 || index >= resolutions.Length) return;
-
-        Resolution selectedResolution = resolutions[index];
-        Screen.SetResolution(selectedResolution.width, selectedResolution.height, Screen.fullScreen);
     }
 
     public void SetQuality(int index)
