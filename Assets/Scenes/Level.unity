@@ -461,10 +461,6 @@ PrefabInstance:
       propertyPath: staminaText
       value: 
       objectReference: {fileID: 118118478}
-    - target: {fileID: 9032323927673708778, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -472,9 +468,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4083804446430700129, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2072392414}
-    - targetCorrespondingSourceObject: {fileID: 4083804446430700129, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2072392423}
   m_SourcePrefab: {fileID: 100100000, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
 --- !u!1 &202791045 stripped
 GameObject:
@@ -3433,29 +3426,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e353574aee6cacc4badcd5ac34123e20, type: 3}
   stepInterval: 0.45
   rayDistance: 2
---- !u!136 &2072392423
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 202791045}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5000001
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2105067649
 GameObject:
   m_ObjectHideFlags: 0

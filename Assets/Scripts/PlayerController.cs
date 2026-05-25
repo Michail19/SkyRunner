@@ -70,11 +70,6 @@ public class PlayerController : MonoBehaviour
     public float stepUpSpeed = 8f;
     public LayerMask stepMask = ~0;
 
-    [Header("Hole Detection")]
-    public ArenaGenerator arenaGenerator;
-    public bool useHoleDetection = true;
-    public float holeFallRadius = 0.65f;
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -166,11 +161,6 @@ public class PlayerController : MonoBehaviour
 
         CheckGround();
 
-        if (useHoleDetection)
-        {
-            CheckHoleUnderPlayer();
-        }
-
         if (knockbackTimer > 0f)
         {
             knockbackTimer -= Time.fixedDeltaTime;
@@ -183,38 +173,6 @@ public class PlayerController : MonoBehaviour
         HandleMove();
         HandleJump();
         TickStats(IsMoving, IsRunning);
-    }
-
-    private void CheckHoleUnderPlayer()
-    {
-        if (arenaGenerator == null)
-        {
-            return;
-        }
-
-        foreach (ArenaTile tile in arenaGenerator.tiles)
-        {
-            if (tile == null || !tile.isDestroyed)
-            {
-                continue;
-            }
-
-            Vector2 playerXZ = new Vector2(transform.position.x, transform.position.z);
-            Vector2 tileXZ = new Vector2(tile.transform.position.x, tile.transform.position.z);
-
-            float distance = Vector2.Distance(playerXZ, tileXZ);
-
-            if (distance <= holeFallRadius)
-            {
-                // Игрок оказался в центре ямы — принудительно даём ему падать.
-                #if UNITY_6000_0_OR_NEWER
-                    rb.linearVelocity = new Vector3(0f, -6f, 0f);
-                #else
-                    rb.velocity = new Vector3(0f, -6f, 0f);
-                #endif
-                return;
-            }
-        }
     }
 
     private void HandleMove()
@@ -273,13 +231,6 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        // Если впереди нет земли, значит это край ямы.
-        // В таком случае не помогаем игроку подняться.
-        if (!HasGroundAhead(direction))
-        {
-            return;
-        }
-
         Vector3 lowerOrigin = col.bounds.center;
         lowerOrigin.y = col.bounds.min.y + 0.15f;
 
@@ -313,34 +264,6 @@ public class PlayerController : MonoBehaviour
 
         Vector3 raisedPosition = rb.position + Vector3.up * stepUpSpeed * Time.fixedDeltaTime;
         rb.MovePosition(raisedPosition);
-    }
-
-    private bool HasGroundAhead(Vector3 direction)
-    {
-        Vector3 checkPosition = rb.position + direction.normalized * stepCheckDistance;
-        checkPosition += Vector3.up * 0.5f;
-
-        float rayLength = col.bounds.extents.y + 1.2f;
-
-        if (!Physics.Raycast(
-                checkPosition,
-                Vector3.down,
-                out RaycastHit hit,
-                rayLength,
-                stepMask,
-                QueryTriggerInteraction.Ignore))
-        {
-            return false;
-        }
-
-        ArenaTile tile = hit.collider.GetComponentInParent<ArenaTile>();
-
-        if (tile == null)
-        {
-            return true;
-        }
-
-        return !tile.isDestroyed;
     }
 
     private void HandleJump()

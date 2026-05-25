@@ -76,8 +76,6 @@ MonoBehaviour:
   warningMaterial: {fileID: 2100000, guid: e156f083941ebe941963a8178af97141, type: 2}
   surfaceType: 1
   movementSpeedMultiplier: 1
-  warningClip: {fileID: 0}
-  collapseClip: {fileID: 0}
 --- !u!1001 &2521231974262831743
 PrefabInstance:
   m_ObjectHideFlags: 0
