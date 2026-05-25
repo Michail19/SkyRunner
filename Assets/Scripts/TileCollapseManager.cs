@@ -10,14 +10,21 @@ public class TileCollapseManager : MonoBehaviour
 
     [Header("Collapse Settings")]
     public float startDelay = 5f;
-    public float collapseInterval = 2f;
-    public float warningTime = 1f;
+    public float warningTime = 1.5f;
+    public float pauseAfterCollapse = 1.5f;
     public int tilesPerWave = 1;
+
+    [Header("Difficulty")]
+    public bool increaseDifficulty = true;
+    public float difficultyStepTime = 15f;
+    public int maxTilesPerWave = 4;
+    public float minPauseAfterCollapse = 0.5f;
 
     [Header("Safety")]
     public float minDistanceFromPlayer = 3f;
 
     private bool isRunning;
+    private float difficultyTimer;
 
     private void Start()
     {
@@ -42,7 +49,11 @@ public class TileCollapseManager : MonoBehaviour
         while (isRunning)
         {
             CollapseRandomTiles();
-            yield return new WaitForSeconds(collapseInterval);
+
+            yield return new WaitForSeconds(warningTime);
+            yield return new WaitForSeconds(pauseAfterCollapse);
+
+            UpdateDifficulty();
         }
     }
 
@@ -91,5 +102,32 @@ public class TileCollapseManager : MonoBehaviour
 
             candidates.RemoveAt(randomIndex);
         }
+    }
+
+    private void UpdateDifficulty()
+    {
+        if (!increaseDifficulty)
+        {
+            return;
+        }
+
+        difficultyTimer += warningTime + pauseAfterCollapse;
+
+        if (difficultyTimer < difficultyStepTime)
+        {
+            return;
+        }
+
+        difficultyTimer = 0f;
+
+        if (tilesPerWave < maxTilesPerWave)
+        {
+            tilesPerWave++;
+        }
+
+        pauseAfterCollapse = Mathf.Max(
+            minPauseAfterCollapse,
+            pauseAfterCollapse - 0.25f
+        );
     }
 }
