@@ -105,6 +105,7 @@ public class ArenaGenerator : MonoBehaviour
 
                 tile.name = $"ArenaTile_{x}_{z}";
                 tile.transform.localScale = Vector3.one;
+                tile.transform.localScale = new Vector3(tileSize, tileThickness, tileSize);
 
                 BoxCollider boxCollider = tile.GetComponent<BoxCollider>();
 

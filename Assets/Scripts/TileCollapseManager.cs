@@ -9,16 +9,29 @@ public class TileCollapseManager : MonoBehaviour
     public Transform player;
 
     [Header("Collapse Settings")]
-    public float startDelay = 10f;
-    public float collapseInterval = 2.5f;
+    public float startDelay = 5f;
+    public float collapseInterval = 2f;
     public float warningTime = 1f;
     public int tilesPerWave = 1;
 
     [Header("Safety")]
     public float minDistanceFromPlayer = 3f;
 
+    private bool isRunning;
+
     private void Start()
     {
+        StartCollapse();
+    }
+
+    public void StartCollapse()
+    {
+        if (isRunning)
+        {
+            return;
+        }
+
+        isRunning = true;
         StartCoroutine(CollapseLoop());
     }
 
@@ -26,7 +39,7 @@ public class TileCollapseManager : MonoBehaviour
     {
         yield return new WaitForSeconds(startDelay);
 
-        while (true)
+        while (isRunning)
         {
             CollapseRandomTiles();
             yield return new WaitForSeconds(collapseInterval);
@@ -44,7 +57,12 @@ public class TileCollapseManager : MonoBehaviour
 
         foreach (ArenaTile tile in arenaGenerator.tiles)
         {
-            if (tile == null || tile.isDestroyed || tile.isProtected)
+            if (tile == null)
+            {
+                continue;
+            }
+
+            if (tile.isDestroyed || tile.isProtected)
             {
                 continue;
             }
@@ -66,11 +84,12 @@ public class TileCollapseManager : MonoBehaviour
                 return;
             }
 
-            int index = Random.Range(0, candidates.Count);
-            ArenaTile selectedTile = candidates[index];
+            int randomIndex = Random.Range(0, candidates.Count);
+            ArenaTile selectedTile = candidates[randomIndex];
 
             selectedTile.Collapse(warningTime);
-            candidates.RemoveAt(index);
+
+            candidates.RemoveAt(randomIndex);
         }
     }
 }
