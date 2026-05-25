@@ -11,17 +11,78 @@ public class ArenaTile : MonoBehaviour
     [Header("Visual")]
     public Renderer tileRenderer;
     public Material normalMaterial;
+    public Material protectedMaterial;
     public Material warningMaterial;
 
     private Collider tileCollider;
 
     private void Awake()
     {
-        tileCollider = GetComponent<Collider>();
+        CacheComponents();
+        ApplyDefaultVisual();
+    }
+
+    private void OnValidate()
+    {
+        CacheComponents();
+        ApplyDefaultVisual();
+    }
+
+    private void CacheComponents()
+    {
+        if (tileCollider == null)
+        {
+            tileCollider = GetComponent<Collider>();
+        }
 
         if (tileRenderer == null)
         {
             tileRenderer = GetComponentInChildren<Renderer>();
+        }
+    }
+
+    public void Setup(bool protectedTile)
+    {
+        isProtected = protectedTile;
+        isDestroyed = false;
+
+        CacheComponents();
+
+        if (tileCollider != null)
+        {
+            tileCollider.enabled = true;
+        }
+
+        gameObject.SetActive(true);
+        ApplyDefaultVisual();
+    }
+
+    private void ApplyDefaultVisual()
+    {
+        if (tileRenderer == null)
+        {
+            return;
+        }
+
+        Material targetMaterial = normalMaterial;
+
+        if (isProtected && protectedMaterial != null)
+        {
+            targetMaterial = protectedMaterial;
+        }
+
+        if (targetMaterial == null)
+        {
+            return;
+        }
+
+        if (Application.isPlaying)
+        {
+            tileRenderer.material = targetMaterial;
+        }
+        else
+        {
+            tileRenderer.sharedMaterial = targetMaterial;
         }
     }
 

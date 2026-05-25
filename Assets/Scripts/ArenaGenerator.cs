@@ -4,12 +4,13 @@ using UnityEngine;
 public class ArenaGenerator : MonoBehaviour
 {
     [Header("Tile")]
-    public GameObject tilePrefab;
+    public ArenaTile tilePrefab;
     public Transform tileParent;
 
     [Header("Grid")]
-    public int gridSize = 17;
+    public int gridSize = 18;
     public float tileSize = 2f;
+    public float tileThickness = 0.25f;
 
     [Header("Shape")]
     public float islandRadiusOffset = 1f;
@@ -19,9 +20,10 @@ public class ArenaGenerator : MonoBehaviour
     public float heightStep = 0.35f;
     public float noiseScale = 0.18f;
 
-    [Header("Safe Zone")]
-    public int protectedRadius = 2;
+    [Header("Safe Center")]
+    public int protectedCenterSize = 2;
 
+    [Header("Generated Tiles")]
     public List<ArenaTile> tiles = new List<ArenaTile>();
 
     private void Start()
@@ -29,29 +31,45 @@ public class ArenaGenerator : MonoBehaviour
         Generate();
     }
 
+    [ContextMenu("Regenerate Arena")]
     public void Generate()
     {
-        tiles.Clear();
+        ClearArena();
 
-        int half = gridSize / 2;
-        float radius = half - islandRadiusOffset;
-
-        for (int x = -half; x <= half; x++)
+        if (tilePrefab == null)
         {
-            for (int z = -half; z <= half; z++)
-            {
-                float distanceFromCenter = Mathf.Sqrt(x * x + z * z);
+            Debug.LogError("ArenaGenerator: tilePrefab is not assigned.", this);
+            return;
+        }
 
-                // Делаем не квадрат, а остров.
+        if (tileParent == null)
+        {
+            tileParent = transform;
+        }
+
+        float centerOffset = (gridSize - 1) / 2f;
+        float radius = gridSize / 2f - islandRadiusOffset;
+
+        for (int x = 0; x < gridSize; x++)
+        {
+            for (int z = 0; z < gridSize; z++)
+            {
+                float distanceFromCenter = Mathf.Sqrt(
+                    Mathf.Pow(x - centerOffset, 2) +
+                    Mathf.Pow(z - centerOffset, 2)
+                );
+
+                // Делаем не квадратную карту, а островную форму.
                 if (distanceFromCenter > radius)
                 {
                     continue;
                 }
 
-                bool isProtected = Mathf.Abs(x) <= protectedRadius && Mathf.Abs(z) <= protectedRadius;
+                bool isProtected = IsProtectedCenter(x, z);
 
                 int heightLevel = 0;
 
+                // Центральные 4 клетки всегда плоские.
                 if (useHeightVariation && !isProtected)
                 {
                     float noise = Mathf.PerlinNoise(
@@ -69,22 +87,55 @@ public class ArenaGenerator : MonoBehaviour
                     }
                 }
 
-                Vector3 position = new Vector3(
-                    x * tileSize,
-                    heightLevel * heightStep,
-                    z * tileSize
+                float worldX = (x - centerOffset) * tileSize;
+                float worldZ = (z - centerOffset) * tileSize;
+                float worldY = heightLevel * heightStep;
+
+                Vector3 position = new Vector3(worldX, worldY, worldZ);
+
+                ArenaTile tile = Instantiate(
+                    tilePrefab,
+                    position,
+                    Quaternion.identity,
+                    tileParent
                 );
 
-                GameObject tileObject = Instantiate(tilePrefab, position, Quaternion.identity, tileParent);
+                tile.name = $"ArenaTile_{x}_{z}";
+                tile.transform.localScale = new Vector3(tileSize, tileThickness, tileSize);
+                tile.Setup(isProtected);
 
-                ArenaTile tile = tileObject.GetComponent<ArenaTile>();
-
-                if (tile != null)
-                {
-                    tile.isProtected = isProtected;
-                    tiles.Add(tile);
-                }
+                tiles.Add(tile);
             }
         }
+    }
+
+    [ContextMenu("Clear Arena")]
+    public void ClearArena()
+    {
+        tiles.Clear();
+
+        Transform parent = tileParent != null ? tileParent : transform;
+
+        for (int i = parent.childCount - 1; i >= 0; i--)
+        {
+            Transform child = parent.GetChild(i);
+
+            if (Application.isPlaying)
+            {
+                Destroy(child.gameObject);
+            }
+            else
+            {
+                DestroyImmediate(child.gameObject);
+            }
+        }
+    }
+
+    private bool IsProtectedCenter(int x, int z)
+    {
+        int start = gridSize / 2 - protectedCenterSize / 2;
+        int end = start + protectedCenterSize - 1;
+
+        return x >= start && x <= end && z >= start && z <= end;
     }
 }
