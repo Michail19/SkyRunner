@@ -114,6 +114,8 @@ MonoBehaviour:
   warningMaterial: {fileID: 2100000, guid: e156f083941ebe941963a8178af97141, type: 2}
   surfaceType: 1
   movementSpeedMultiplier: 1
+  warningClip: {fileID: 0}
+  collapseClip: {fileID: 0}
 --- !u!23 &6077754442997197115 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2960616035734396867, guid: 4707231c0cbf9614da99cd2e05c0c31a, type: 3}
