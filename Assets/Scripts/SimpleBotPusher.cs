@@ -46,6 +46,17 @@ public class SimpleBotPusher : MonoBehaviour
     private Vector3 targetHolePosition;
     private float nextHoleCheckTime;
 
+    [Header("Step Jump")]
+    public bool useStepJump = true;
+    public float groundCheckDistance = 1.2f;
+    public float stepCheckDistance = 0.65f;
+    public float stepCheckHeight = 0.25f;
+    public float stepJumpForce = 3.5f;
+    public float stepJumpCooldown = 0.35f;
+    public LayerMask groundMask = ~0;
+
+    private float nextStepJumpTime;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -115,6 +126,7 @@ public class SimpleBotPusher : MonoBehaviour
 
         if (distance > stopDistance)
         {
+            TryStepJump(direction);
             MoveToPlayer(direction);
             isMoving = true;
         }
@@ -342,5 +354,87 @@ public class SimpleBotPusher : MonoBehaviour
             rb.velocity = new Vector3(0f, -4f, 0f);
         #endif
         }
+    }
+
+    private void TryStepJump(Vector3 direction)
+    {
+        if (!useStepJump)
+        {
+            return;
+        }
+
+        if (Time.time < nextStepJumpTime)
+        {
+            return;
+        }
+
+        if (!IsGrounded())
+        {
+            return;
+        }
+
+        if (!HasStepInFront(direction))
+        {
+            return;
+        }
+
+        nextStepJumpTime = Time.time + stepJumpCooldown;
+
+        #if UNITY_6000_0_OR_NEWER
+            Vector3 velocity = rb.linearVelocity;
+            velocity.y = 0f;
+            rb.linearVelocity = velocity;
+        #else
+            Vector3 velocity = rb.velocity;
+            velocity.y = 0f;
+            rb.velocity = velocity;
+        #endif
+
+        rb.AddForce(Vector3.up * stepJumpForce, ForceMode.VelocityChange);
+    }
+
+    private bool IsGrounded()
+    {
+        Vector3 origin = transform.position + Vector3.up * 0.1f;
+
+        return Physics.Raycast(
+            origin,
+            Vector3.down,
+            groundCheckDistance,
+            groundMask,
+            QueryTriggerInteraction.Ignore
+        );
+    }
+
+    private bool HasStepInFront(Vector3 direction)
+    {
+        // Нижний луч: видит, что прямо перед ботом есть стенка/уступ.
+        Vector3 lowerOrigin = transform.position + Vector3.up * stepCheckHeight;
+
+        bool lowerHit = Physics.Raycast(
+            lowerOrigin,
+            direction,
+            stepCheckDistance,
+            groundMask,
+            QueryTriggerInteraction.Ignore
+        );
+
+        if (!lowerHit)
+        {
+            return false;
+        }
+
+        // Верхний луч: проверяет, что это не высокая стена, а небольшой порожек.
+        Vector3 upperOrigin = transform.position + Vector3.up * (stepCheckHeight + 0.65f);
+
+        bool upperHit = Physics.Raycast(
+            upperOrigin,
+            direction,
+            stepCheckDistance,
+            groundMask,
+            QueryTriggerInteraction.Ignore
+        );
+
+        return !upperHit;
     }
 }
