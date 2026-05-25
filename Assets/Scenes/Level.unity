@@ -953,7 +953,7 @@ MonoBehaviour:
   exitZoneObject: {fileID: 1258992743}
   objectiveText: {fileID: 2127466369}
   itemsToSpawn: 3
-  itemHeightOffset: 0.1
+  itemHeightOffset: 1
   minDistanceFromCenter: 6
 --- !u!4 &1115165011
 Transform:
@@ -1344,9 +1344,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6a5c73cc0c5eb74188f3434fe094f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ArenaGenerator
-  lowTilePrefab: {fileID: 2315060059932382169, guid: d3f7d0e88439ad64f8e8d242239f867f, type: 3}
-  grassTilePrefab: {fileID: 2480504843597964247, guid: 0bc94a387ccce714b9ce8f8b8de33659, type: 3}
-  stoneTilePrefab: {fileID: 1041395105307756445, guid: 88011f857e579ab4cb66bedee35fdde9, type: 3}
+  lowTilePrefab: {fileID: 7656119625971815486, guid: 8d5d2b46d13309544a830dfa5e1d1107, type: 3}
+  grassTilePrefab: {fileID: 5596972222067733135, guid: 1066b7d195b4e264a84e68024e9b9a58, type: 3}
+  stoneTilePrefab: {fileID: 523226909606140474, guid: 7babe3182317ff745b6bce7dd87df18f, type: 3}
   tileParent: {fileID: 0}
   gridSize: 18
   tileSize: 2
@@ -1355,8 +1355,8 @@ MonoBehaviour:
   useHeightVariation: 1
   heightStep: 0.35
   noiseScale: 0.18
-  lowThreshold: 0.35
-  highThreshold: 0.68
+  lowThreshold: 0.25
+  highThreshold: 0.75
   protectedCenterSize: 2
   colliderOverlap: 0
   tiles: []
@@ -1739,15 +1739,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2004889794873343969, guid: 68fb1af0fc9ff594da6d5fad678a3eea, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 2004889794873343969, guid: 68fb1af0fc9ff594da6d5fad678a3eea, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.1
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2004889794873343969, guid: 68fb1af0fc9ff594da6d5fad678a3eea, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2004889794873343969, guid: 68fb1af0fc9ff594da6d5fad678a3eea, type: 3}
       propertyPath: m_LocalRotation.w
