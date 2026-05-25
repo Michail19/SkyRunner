@@ -107,6 +107,9 @@ MonoBehaviour:
   knockbackForce: 9
   knockbackUpForce: 1.2
   destroyY: -10
+  animator: {fileID: 2475094850736944182}
+  moveSpeedParameter: MoveSpeed
+  attackTrigger: Attack
 --- !u!1001 &2475094850727444822
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -195,5 +198,10 @@ PrefabInstance:
 --- !u!4 &2475094850727582702 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400056, guid: 8c53cffd52097cf4582f0a090c9a833e, type: 3}
+  m_PrefabInstance: {fileID: 2475094850727444822}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &2475094850736944182 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9500000, guid: 8c53cffd52097cf4582f0a090c9a833e, type: 3}
   m_PrefabInstance: {fileID: 2475094850727444822}
   m_PrefabAsset: {fileID: 0}
