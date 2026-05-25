@@ -81,7 +81,7 @@ public class ObjectiveManager : MonoBehaviour
                 Quaternion.identity
             );
 
-            item.Init(this);
+            item.Init(this, tile);
             spawnedItems.Add(item);
         }
 
@@ -98,6 +98,7 @@ public class ObjectiveManager : MonoBehaviour
         collectedItems++;
 
         spawnedItems.Remove(item);
+        item.ClearOwnerTile();
         Destroy(item.gameObject);
 
         if (collectedItems >= itemsToSpawn)

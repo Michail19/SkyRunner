@@ -73,7 +73,7 @@ public class TileCollapseManager : MonoBehaviour
                 continue;
             }
 
-            if (tile.isDestroyed || tile.isProtected)
+            if (tile.isDestroyed || tile.isProtected || tile.hasObjectiveItem)
             {
                 continue;
             }
