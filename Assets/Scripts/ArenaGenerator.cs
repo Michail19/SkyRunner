@@ -107,22 +107,22 @@ public class ArenaGenerator : MonoBehaviour
                 tile.transform.localScale = Vector3.one;
                 tile.transform.localScale = new Vector3(tileSize, tileThickness, tileSize);
 
-                BoxCollider boxCollider = tile.GetComponent<BoxCollider>();
+                // BoxCollider boxCollider = tile.GetComponent<BoxCollider>();
 
-                if (boxCollider != null)
-                {
-                    boxCollider.size = new Vector3(
-                        tileSize + colliderOverlap,
-                        tileThickness,
-                        tileSize + colliderOverlap
-                    );
+                //if (boxCollider != null)
+                //{
+                //    boxCollider.size = new Vector3(
+                //        tileSize + colliderOverlap,
+                //        tileThickness,
+                //        tileSize + colliderOverlap
+                //    );
 
-                    boxCollider.center = new Vector3(
-                        0f,
-                        -tileThickness / 2f,
-                        0f
-                    );
-                }
+                //    boxCollider.center = new Vector3(
+                //        0f,
+                //        -tileThickness / 2f,
+                //        0f
+                //    );
+                //}
 
                 tile.Setup(isProtected);
 

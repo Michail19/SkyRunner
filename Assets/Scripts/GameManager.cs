@@ -95,6 +95,34 @@ public class GameManager : MonoBehaviour
         Debug.Log("Game Over. Survival time: " + FormatTime(survivalTime));
     }
 
+    public void WinGame()
+    {
+        if (isGameOver)
+        {
+            return;
+        }
+
+        isGameOver = true;
+        GamePauseState.IsPaused = true;
+
+        if (resultText != null)
+        {
+            resultText.text = "Victory!\nTime: " + FormatTime(survivalTime);
+        }
+
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true);
+        }
+
+        Time.timeScale = 0f;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        Debug.Log("Victory. Time: " + FormatTime(survivalTime));
+    }
+
     private string FormatTime(float time)
     {
         int minutes = Mathf.FloorToInt(time / 60f);
