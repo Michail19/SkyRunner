@@ -11,6 +11,6 @@ public class PlayerHUD : MonoBehaviour
         if (stats == null || staminaText == null)
             return;
 
-        staminaText.text = $"Stamina: {Mathf.RoundToInt(stats.stamina)}";
+        staminaText.text = $"Выносливость: {Mathf.RoundToInt(stats.stamina)}";
     }
 }

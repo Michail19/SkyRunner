@@ -66,17 +66,17 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        timerText.text = "Time: " + FormatTime(survivalTime);
+        timerText.text = "Время: " + FormatTime(survivalTime);
     }
 
     private void GameOver()
     {
-        ShowEndScreen("Game Over\nTime: " + FormatTime(survivalTime));
+        ShowEndScreen("Поражение\nВремя: " + FormatTime(survivalTime));
     }
 
     public void WinGame()
     {
-        ShowEndScreen("Victory!\nTime: " + FormatTime(survivalTime));
+        ShowEndScreen("Победа!\nВремя: " + FormatTime(survivalTime));
     }
 
     private void ShowEndScreen(string message)
@@ -133,7 +133,7 @@ public class GameManager : MonoBehaviour
         GamePauseState.IsPaused = false;
 
         Application.Quit();
-        Debug.Log("Exit game");
+        Debug.Log("Выход из игры");
     }
 
     private string FormatTime(float time)

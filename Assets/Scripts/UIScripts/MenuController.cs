@@ -155,9 +155,9 @@ public class MenuController : MonoBehaviour
 
         difficultyDropdown.AddOptions(new List<string>
     {
-        "Easy",
-        "Normal",
-        "Hard"
+        "Лёгкая",
+        "Обычная",
+        "Сложная"
     });
 
         difficultyDropdown.value = (int)GameSettings.difficulty;

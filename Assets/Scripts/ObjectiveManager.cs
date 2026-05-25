@@ -180,11 +180,11 @@ public class ObjectiveManager : MonoBehaviour
 
         if (collectedItems < itemsToSpawn)
         {
-            objectiveText.text = $"Items: {collectedItems}/{itemsToSpawn}";
+            objectiveText.text = $"Предметы: {collectedItems}/{itemsToSpawn}";
         }
         else
         {
-            objectiveText.text = "Exit is open!";
+            objectiveText.text = "Выход открыт!";
         }
     }
 }
