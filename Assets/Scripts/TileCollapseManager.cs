@@ -28,7 +28,16 @@ public class TileCollapseManager : MonoBehaviour
 
     private void Start()
     {
+        ApplyGameSettings();
         StartCollapse();
+    }
+
+    private void ApplyGameSettings()
+    {
+        startDelay = GameSettings.collapseStartDelay;
+        warningTime = GameSettings.warningTime;
+        pauseAfterCollapse = GameSettings.pauseAfterCollapse;
+        tilesPerWave = GameSettings.tilesPerWave;
     }
 
     public void StartCollapse()

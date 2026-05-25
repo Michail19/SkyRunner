@@ -32,7 +32,14 @@ public class BotSpawner : MonoBehaviour
 
     private void Start()
     {
+        ApplyGameSettings();
         StartCoroutine(SpawnLoop());
+    }
+
+    private void ApplyGameSettings()
+    {
+        spawnInterval = GameSettings.botSpawnInterval;
+        maxAliveBots = GameSettings.maxAliveBots;
     }
 
     private IEnumerator SpawnLoop()
@@ -90,6 +97,7 @@ public class BotSpawner : MonoBehaviour
             );
 
             bot.player = player;
+            bot.moveSpeed *= GameSettings.botMoveSpeedMultiplier;
             bot.arenaGenerator = arenaGenerator;
 
             aliveBots.Add(bot);

@@ -14,10 +14,15 @@ public class MenuController : MonoBehaviour
     public TMP_Dropdown qualityDropdown;
     public Toggle fullscreenToggle;
 
+    public TMP_Dropdown difficultyDropdown;
+    public Slider volumeSlider;
+
     private Resolution[] resolutions;
 
     void Start()
     {
+        GameSettings.Load();
+
         Time.timeScale = 1f;
         GamePauseState.IsPaused = false;
 
@@ -25,6 +30,8 @@ public class MenuController : MonoBehaviour
         Cursor.visible = true;
 
         SetupSensitivity();
+        SetupVolume();
+        SetupDifficulty();
         SetupResolutionDropdown();
         SetupQualityDropdown();
         SetupFullscreenToggle();
@@ -85,6 +92,7 @@ public class MenuController : MonoBehaviour
     public void SetSensitivity(float value)
     {
         GameSettings.mouseSensitivity = value;
+        GameSettings.Save();
     }
 
     public void SetResolution(int index)
@@ -127,5 +135,48 @@ public class MenuController : MonoBehaviour
     {
         Application.Quit();
         Debug.Log("Выход из игры");
+    }
+
+    void SetupVolume()
+    {
+        if (volumeSlider == null) return;
+
+        volumeSlider.value = GameSettings.masterVolume;
+        volumeSlider.onValueChanged.AddListener(SetVolume);
+
+        AudioListener.volume = GameSettings.masterVolume;
+    }
+
+    void SetupDifficulty()
+    {
+        if (difficultyDropdown == null) return;
+
+        difficultyDropdown.ClearOptions();
+
+        difficultyDropdown.AddOptions(new List<string>
+    {
+        "Easy",
+        "Normal",
+        "Hard"
+    });
+
+        difficultyDropdown.value = (int)GameSettings.difficulty;
+        difficultyDropdown.RefreshShownValue();
+
+        difficultyDropdown.onValueChanged.AddListener(SetDifficulty);
+    }
+
+    public void SetVolume(float value)
+    {
+        GameSettings.masterVolume = value;
+        AudioListener.volume = value;
+        GameSettings.Save();
+    }
+
+    public void SetDifficulty(int index)
+    {
+        GameDifficulty selectedDifficulty = (GameDifficulty)index;
+        GameSettings.ApplyDifficulty(selectedDifficulty);
+        GameSettings.Save();
     }
 }

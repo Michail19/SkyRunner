@@ -23,6 +23,8 @@ public class ObjectiveManager : MonoBehaviour
 
     private void Start()
     {
+        itemsToSpawn = GameSettings.itemsToCollect;
+
         if (exitZoneObject != null)
         {
             exitZoneObject.SetActive(false);
