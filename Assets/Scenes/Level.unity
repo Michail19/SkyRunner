@@ -415,7 +415,7 @@ PrefabInstance:
       objectReference: {fileID: 1554420653}
     - target: {fileID: 6605654234856010128, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 6605654234856010128, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -423,7 +423,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6605654234856010128, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6605654234856010128, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1353,10 +1353,10 @@ MonoBehaviour:
   tileThickness: 0.25
   islandRadiusOffset: 1
   useHeightVariation: 1
-  heightStep: 0.35
+  heightStep: 0.5
   noiseScale: 0.18
-  lowThreshold: 0.25
-  highThreshold: 0.75
+  lowThreshold: 0.35
+  highThreshold: 0.65
   protectedCenterSize: 2
   colliderOverlap: 0
   tiles: []
