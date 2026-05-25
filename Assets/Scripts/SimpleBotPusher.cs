@@ -29,7 +29,6 @@ public class SimpleBotPusher : MonoBehaviour
     public Animator animator;
     public string moveSpeedParameter = "MoveSpeed";
     public string attackTrigger = "Attack";
-    public string deathTrigger = "Dead";
 
     private bool isMoving;
 
@@ -176,7 +175,7 @@ public class SimpleBotPusher : MonoBehaviour
 
         float normalizedSpeed = Mathf.Clamp01(velocity.magnitude / moveSpeed);
 
-        animator.SetFloat(moveSpeedParameter, normalizedSpeed);
+        animator.SetFloat(moveSpeedParameter, isMoving ? 1f : 0f);
     }
 
     private Vector3 GetRigidbodyVelocity()
