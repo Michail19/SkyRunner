@@ -108,7 +108,7 @@ public class MenuController : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene("Level_01");
+        SceneManager.LoadScene("Level");
     }
 
     public void OpenSettings()
