@@ -464,8 +464,21 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4083804446430700129, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2072392414}
   m_SourcePrefab: {fileID: 100100000, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
+--- !u!1 &202791045 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4083804446430700129, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
+  m_PrefabInstance: {fileID: 202791044}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &202791046 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 8225211562714142003, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
+  m_PrefabInstance: {fileID: 202791044}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &356553589
 GameObject:
   m_ObjectHideFlags: 0
@@ -3339,12 +3352,80 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6060255616378125088, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
   m_PrefabInstance: {fileID: 202791044}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 202791045}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6822f3b35f11057429a15cac0994fc99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+--- !u!114 &2072392414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202791045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0c58e63b8619e140828736f540530e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootstepController
+  audioSource: {fileID: 202791046}
+  stats: {fileID: 2072392413}
+  floorStepClips:
+  - {fileID: 8300000, guid: 4d11813f5983ce047873c94858e6a6c1, type: 3}
+  - {fileID: 8300000, guid: 6154d2d90f91ac743a30a16a58f9fa32, type: 3}
+  - {fileID: 8300000, guid: 4544cd1f9b0d00a498e3602ecfffcacc, type: 3}
+  - {fileID: 8300000, guid: 2921c47b0bdded540b5b813c1e60001c, type: 3}
+  - {fileID: 8300000, guid: 825d688f717750646b0a05cb2db4ae16, type: 3}
+  - {fileID: 8300000, guid: df0f02816989a0348b801669beb67362, type: 3}
+  - {fileID: 8300000, guid: 90f0af26cb589f64eaae4a27d022a1d3, type: 3}
+  - {fileID: 8300000, guid: 8ce4499bbd5a13e408937e979191ac28, type: 3}
+  - {fileID: 8300000, guid: b8da35185c17df440a0d9e0309ac22a3, type: 3}
+  - {fileID: 8300000, guid: 209ae35949b251d4a83610a1e5992a2f, type: 3}
+  - {fileID: 8300000, guid: 10485b9efe2bd994f98d392f91dd1a0a, type: 3}
+  - {fileID: 8300000, guid: ed6bb89be19053b4abdfe85ac7daf25f, type: 3}
+  - {fileID: 8300000, guid: 9a7a2d7c3f0efa7408e14bd09744808d, type: 3}
+  - {fileID: 8300000, guid: 27ff539436f259348b7138c14d3885cc, type: 3}
+  - {fileID: 8300000, guid: a6e2596331387124da8e81d37da68ae2, type: 3}
+  - {fileID: 8300000, guid: ec02951caf7cd1f4fbc24fe9960cc69a, type: 3}
+  - {fileID: 8300000, guid: 7250925503d24ac4184011ccade045dd, type: 3}
+  - {fileID: 8300000, guid: 02dc709a1e386674e8d05d3c04baa6f7, type: 3}
+  - {fileID: 8300000, guid: c92fd58ac6b91794ba82b93ef3f4e00e, type: 3}
+  - {fileID: 8300000, guid: a70895712392d4345be385abfae08f28, type: 3}
+  - {fileID: 8300000, guid: b70d04f1f7e251b4f8629b271d71c623, type: 3}
+  forestGroundStepClips:
+  - {fileID: 8300000, guid: 0609acde86b59a2458aaf135531f8756, type: 3}
+  - {fileID: 8300000, guid: fdfa07727ba18e146b0d737f16110ba5, type: 3}
+  - {fileID: 8300000, guid: e988fcf175fd1874db4f82c3b2d75db3, type: 3}
+  - {fileID: 8300000, guid: 98e005e2d5100484b88927d0803cb395, type: 3}
+  - {fileID: 8300000, guid: b3e9cdac26b78934197456d8199e30bc, type: 3}
+  - {fileID: 8300000, guid: ddc4973571f36404d95c23401b7d2f12, type: 3}
+  - {fileID: 8300000, guid: 8c9f76b14113ab640ab4b94535ad82e3, type: 3}
+  groundStepClips:
+  - {fileID: 8300000, guid: eec53751c4e79a7469fc34e774360128, type: 3}
+  - {fileID: 8300000, guid: dbe4405baeea2404ba3d422430b5fd3b, type: 3}
+  - {fileID: 8300000, guid: c8657061120b2da4fb645654b16201f6, type: 3}
+  - {fileID: 8300000, guid: 8ff53086d637af8478c1408b78b3dd05, type: 3}
+  - {fileID: 8300000, guid: b662731f964d624449b092d4198147de, type: 3}
+  rockyGroundStepClips:
+  - {fileID: 8300000, guid: c87c3a812abe2fc4baa1fe54b4b77172, type: 3}
+  - {fileID: 8300000, guid: ee6a6c12e92b76347881600e494ea047, type: 3}
+  - {fileID: 8300000, guid: 06438add0bb42f846b7f1e2e0fcb78cb, type: 3}
+  - {fileID: 8300000, guid: 7dd1b75dd97f9af468c655f59ab900cc, type: 3}
+  - {fileID: 8300000, guid: 294e5ecef1c038f4eaaaad457cad5981, type: 3}
+  - {fileID: 8300000, guid: 0810c6bbffb6c0143984f3145f710f69, type: 3}
+  - {fileID: 8300000, guid: ebd381bfafa32b844a6954fc40a08c2e, type: 3}
+  - {fileID: 8300000, guid: 5c3c2c44515d6fe44a395faf0741edc0, type: 3}
+  defaultStepClips:
+  - {fileID: 8300000, guid: 574d70118068c704e9d2654d8e5b386f, type: 3}
+  - {fileID: 8300000, guid: 6233c85216cd1854e8d87991c7568256, type: 3}
+  - {fileID: 8300000, guid: 4a2772599b7a7d64b98ba0c3ffbc6c19, type: 3}
+  - {fileID: 8300000, guid: f76b4e8c8e400f34dba1aeb2aaaddd98, type: 3}
+  - {fileID: 8300000, guid: dc12b3fea9c332f4a88d3b03843cf9c7, type: 3}
+  - {fileID: 8300000, guid: e353574aee6cacc4badcd5ac34123e20, type: 3}
+  stepInterval: 0.45
+  rayDistance: 2
 --- !u!1 &2105067649
 GameObject:
   m_ObjectHideFlags: 0

@@ -71,15 +71,15 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
-        ShowEndScreen("Поражение\nВремя: " + FormatTime(survivalTime));
+        ShowEndScreen("Поражение\nВремя: " + FormatTime(survivalTime), false);
     }
 
     public void WinGame()
     {
-        ShowEndScreen("Победа!\nВремя: " + FormatTime(survivalTime));
+        ShowEndScreen("Победа!\nВремя: " + FormatTime(survivalTime), true);
     }
 
-    private void ShowEndScreen(string message)
+    private void ShowEndScreen(string message, bool isVictory)
     {
         if (isGameOver)
         {
@@ -97,6 +97,15 @@ public class GameManager : MonoBehaviour
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(true);
+        }
+
+        if (AudioManager.Instance != null)
+        {
+            AudioClip clip = isVictory
+                ? AudioManager.Instance.victoryClip
+                : AudioManager.Instance.gameOverClip;
+
+            AudioManager.Instance.PlaySfx(clip, 1f);
         }
 
         Time.timeScale = 0f;

@@ -182,6 +182,12 @@ public class MenuController : MonoBehaviour
     {
         GameSettings.masterVolume = value;
         AudioListener.volume = value;
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.ApplyVolume();
+        }
+
         GameSettings.Save();
     }
 

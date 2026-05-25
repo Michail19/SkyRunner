@@ -5,6 +5,9 @@ public class CollectibleItem : MonoBehaviour
     private ObjectiveManager objectiveManager;
     private ArenaTile ownerTile;
 
+    [Header("Audio")]
+    public AudioClip collectClip;
+
     public void Init(ObjectiveManager manager, ArenaTile tile)
     {
         objectiveManager = manager;
@@ -40,6 +43,12 @@ public class CollectibleItem : MonoBehaviour
 
         if (objectiveManager != null)
         {
+            if (AudioManager.Instance != null)
+            {
+                AudioClip clip = collectClip != null ? collectClip : AudioManager.Instance.itemCollectClip;
+                AudioManager.Instance.PlaySfxAtPosition(clip, transform.position, 1f);
+            }
+
             objectiveManager.CollectItem(this);
         }
     }

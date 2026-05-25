@@ -59,6 +59,10 @@ public class SimpleBotPusher : MonoBehaviour
 
     private float nextStepJumpTime;
 
+    [Header("Audio")]
+    public AudioClip attackClip;
+    public AudioClip knockbackClip;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -136,6 +140,12 @@ public class SimpleBotPusher : MonoBehaviour
         if (CanAttackPlayer(direction, distance))
         {
             TryPushPlayer(direction);
+
+            if (AudioManager.Instance != null)
+            {
+                AudioClip clip = attackClip != null ? attackClip : AudioManager.Instance.botSoundClip;
+                AudioManager.Instance.PlaySfxAtPosition(clip, transform.position, 0.8f);
+            }
         }
 
         UpdateAnimation();
@@ -217,6 +227,13 @@ public class SimpleBotPusher : MonoBehaviour
         if (playerController != null)
         {
             playerController.ApplyKnockback(direction, knockbackForce, knockbackUpForce);
+
+            if (AudioManager.Instance != null)
+            {
+                AudioClip clip = knockbackClip != null ? knockbackClip : AudioManager.Instance.knockbackClip;
+                AudioManager.Instance.PlaySfxAtPosition(clip, player.position, 0.8f);
+            }
+
             return;
         }
 

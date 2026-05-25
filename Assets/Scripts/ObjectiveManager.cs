@@ -182,11 +182,16 @@ public class ObjectiveManager : MonoBehaviour
         if (exitZoneObject != null)
         {
             exitZoneObject.SetActive(true);
-            Debug.Log("Exit activated: " + exitZoneObject.name, exitZoneObject);
+            Debug.Log("Выход активирован: " + exitZoneObject.name, exitZoneObject);
+
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySfx(AudioManager.Instance.portalOpenClip, 1f);
+            }
         }
         else
         {
-            Debug.LogError("ObjectiveManager: exitZoneObject is not assigned.", this);
+            Debug.LogError("ObjectiveManager: объект выхода не назначен.", this);
         }
     }
 

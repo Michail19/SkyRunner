@@ -3049,8 +3049,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 759418351}
-  - component: {fileID: 759418352}
   - component: {fileID: 759418350}
+  - component: {fileID: 759418352}
   m_Layer: 5
   m_Name: AudioManager
   m_TagString: Untagged
@@ -3183,10 +3183,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 759418349}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c0122cd7005d1247a763f2cd88fea04, type: 3}
+  m_Script: {fileID: 11500000, guid: 0662abb114105214091d5491be709ba0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
   musicSource: {fileID: 0}
+  sfxSource: {fileID: 0}
+  menuMusic: {fileID: 8300000, guid: 8b743f84f3832c740be4f7b9e1f991fb, type: 3}
+  gameplayMusic: {fileID: 8300000, guid: ccfe21e2f4210f542867c8885292f40d, type: 3}
+  buttonClickClip: {fileID: 0}
+  itemCollectClip: {fileID: 8300000, guid: b1df33f803480ba40af8c1c5c7eaac18, type: 3}
+  portalOpenClip: {fileID: 8300000, guid: 58fce600e33c73041bd18151734cb2a0, type: 3}
+  botSoundClip: {fileID: 8300000, guid: 1b2561d25cac8a04d885f25429f8a13c, type: 3}
+  knockbackClip: {fileID: 8300000, guid: 9f86afcced362b848b307c08e3aa844a, type: 3}
+  tileWarningClip: {fileID: 0}
+  tileCollapseClip: {fileID: 0}
+  victoryClip: {fileID: 0}
+  gameOverClip: {fileID: 0}
+  musicVolume: 0.35
+  sfxVolume: 0.8
 --- !u!1 &809391684
 GameObject:
   m_ObjectHideFlags: 0

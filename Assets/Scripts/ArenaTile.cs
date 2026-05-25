@@ -30,6 +30,10 @@ public class ArenaTile : MonoBehaviour
     public TileSurfaceType surfaceType = TileSurfaceType.Grass;
     public float movementSpeedMultiplier = 1f;
 
+    [Header("Audio")]
+    public AudioClip warningClip;
+    public AudioClip collapseClip;
+
     private void Awake()
     {
         CacheComponents();
@@ -108,6 +112,12 @@ public class ArenaTile : MonoBehaviour
         }
 
         StartCoroutine(CollapseRoutine(warningTime));
+
+        if (AudioManager.Instance != null)
+        {
+            AudioClip clip = warningClip != null ? warningClip : AudioManager.Instance.tileWarningClip;
+            AudioManager.Instance.PlaySfxAtPosition(clip, transform.position, 0.6f);
+        }
     }
 
     private IEnumerator CollapseRoutine(float warningTime)
@@ -124,6 +134,12 @@ public class ArenaTile : MonoBehaviour
         if (tileCollider != null)
         {
             tileCollider.enabled = false;
+        }
+
+        if (AudioManager.Instance != null)
+        {
+            AudioClip clip = collapseClip != null ? collapseClip : AudioManager.Instance.tileCollapseClip;
+            AudioManager.Instance.PlaySfxAtPosition(clip, transform.position, 0.7f);
         }
 
         gameObject.SetActive(false);
