@@ -1426,7 +1426,7 @@ MonoBehaviour:
   minSpawnInterval: 3
   autoScaleWithArena: 1
   minMaxAliveBots: 4
-  maxMaxAliveBots: 15
+  maxMaxAliveBots: 30
 --- !u!4 &676203177
 Transform:
   m_ObjectHideFlags: 0
@@ -1751,7 +1751,7 @@ MonoBehaviour:
   minDistanceFromCenter: 16
   autoScaleWithArena: 1
   minItems: 3
-  maxItems: 8
+  maxItems: 20
 --- !u!4 &1115165011
 Transform:
   m_ObjectHideFlags: 0
