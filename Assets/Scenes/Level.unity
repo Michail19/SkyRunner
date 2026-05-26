@@ -185,8 +185,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4283585106
+  m_fontColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -424,7 +424,7 @@ PrefabInstance:
     - target: {fileID: 5376647639018288091, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
       propertyPath: playerCol
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2072392415}
     - target: {fileID: 6605654234856010128, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1
@@ -2104,8 +2104,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4283585106
+  m_fontColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3443,6 +3443,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e353574aee6cacc4badcd5ac34123e20, type: 3}
   stepInterval: 0.45
   rayDistance: 2
+--- !u!136 &2072392415 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 377055868232838723, guid: 40b515a44064c2945af2c947b937c34a, type: 3}
+  m_PrefabInstance: {fileID: 202791044}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2105067649
 GameObject:
   m_ObjectHideFlags: 0
@@ -3646,8 +3651,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4283585106
+  m_fontColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
