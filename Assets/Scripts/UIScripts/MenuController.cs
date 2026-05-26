@@ -19,9 +19,9 @@ public class MenuController : MonoBehaviour
 
     public GameObject instructionsPanel;
 
-    private List<Vector2Int> availableResolutions = new List<Vector2Int>();
+    private readonly List<Vector2Int> availableResolutions = new List<Vector2Int>();
 
-    void Start()
+    private void Start()
     {
         GameSettings.Load();
 
@@ -49,17 +49,24 @@ public class MenuController : MonoBehaviour
         SetupFullscreenToggle();
     }
 
-    void SetupSensitivity()
+    private void SetupSensitivity()
     {
-        if (sensitivitySlider == null) return;
+        if (sensitivitySlider == null)
+        {
+            return;
+        }
 
-        sensitivitySlider.value = GameSettings.mouseSensitivity;
+        sensitivitySlider.SetValueWithoutNotify(GameSettings.mouseSensitivity);
+        sensitivitySlider.onValueChanged.RemoveListener(SetSensitivity);
         sensitivitySlider.onValueChanged.AddListener(SetSensitivity);
     }
 
-    void SetupResolutionDropdown()
+    private void SetupResolutionDropdown()
     {
-        if (resolutionDropdown == null) return;
+        if (resolutionDropdown == null)
+        {
+            return;
+        }
 
         availableResolutions.Clear();
         resolutionDropdown.ClearOptions();
@@ -71,7 +78,6 @@ public class MenuController : MonoBehaviour
             AddResolutionIfUnique(resolution.width, resolution.height);
         }
 
-        // Fallback, если Unity в билде дала только 640x480 или пустой список.
         if (availableResolutions.Count <= 1)
         {
             AddResolutionIfUnique(1280, 720);
@@ -120,8 +126,15 @@ public class MenuController : MonoBehaviour
 
     public void SetResolution(int index)
     {
-        if (availableResolutions == null || availableResolutions.Count == 0) return;
-        if (index < 0 || index >= availableResolutions.Count) return;
+        if (availableResolutions == null || availableResolutions.Count == 0)
+        {
+            return;
+        }
+
+        if (index < 0 || index >= availableResolutions.Count)
+        {
+            return;
+        }
 
         Vector2Int selectedResolution = availableResolutions[index];
 
@@ -132,9 +145,12 @@ public class MenuController : MonoBehaviour
         );
     }
 
-    void SetupQualityDropdown()
+    private void SetupQualityDropdown()
     {
-        if (qualityDropdown == null) return;
+        if (qualityDropdown == null)
+        {
+            return;
+        }
 
         qualityDropdown.ClearOptions();
         qualityDropdown.AddOptions(new List<string>(QualitySettings.names));
@@ -145,9 +161,12 @@ public class MenuController : MonoBehaviour
         qualityDropdown.onValueChanged.AddListener(SetQuality);
     }
 
-    void SetupFullscreenToggle()
+    private void SetupFullscreenToggle()
     {
-        if (fullscreenToggle == null) return;
+        if (fullscreenToggle == null)
+        {
+            return;
+        }
 
         fullscreenToggle.SetIsOnWithoutNotify(Screen.fullScreen);
 
@@ -173,7 +192,28 @@ public class MenuController : MonoBehaviour
 
     public void StartGame()
     {
+        ApplyCurrentMenuSettings();
         SceneManager.LoadScene("Level");
+    }
+
+    private void ApplyCurrentMenuSettings()
+    {
+        if (difficultyDropdown != null)
+        {
+            SetDifficulty(difficultyDropdown.value);
+        }
+
+        if (sensitivitySlider != null)
+        {
+            SetSensitivity(sensitivitySlider.value);
+        }
+
+        if (volumeSlider != null)
+        {
+            SetVolume(volumeSlider.value);
+        }
+
+        GameSettings.Save();
     }
 
     public void OpenSettings()
@@ -191,35 +231,42 @@ public class MenuController : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
-        Debug.Log("Выход из игры");
+        Debug.Log("Р’С‹С…РѕРґ РёР· РёРіСЂС‹");
     }
 
-    void SetupVolume()
+    private void SetupVolume()
     {
-        if (volumeSlider == null) return;
+        if (volumeSlider == null)
+        {
+            return;
+        }
 
-        volumeSlider.value = GameSettings.masterVolume;
+        volumeSlider.SetValueWithoutNotify(GameSettings.masterVolume);
+        volumeSlider.onValueChanged.RemoveListener(SetVolume);
         volumeSlider.onValueChanged.AddListener(SetVolume);
 
         AudioListener.volume = GameSettings.masterVolume;
     }
 
-    void SetupDifficulty()
+    private void SetupDifficulty()
     {
-        if (difficultyDropdown == null) return;
+        if (difficultyDropdown == null)
+        {
+            return;
+        }
 
         difficultyDropdown.ClearOptions();
-
         difficultyDropdown.AddOptions(new List<string>
-    {
-        "Лёгкая",
-        "Обычная",
-        "Сложная"
-    });
+        {
+            "Р›С‘РіРєР°СЏ",
+            "РћР±С‹С‡РЅР°СЏ",
+            "РЎР»РѕР¶РЅР°СЏ"
+        });
 
-        difficultyDropdown.value = (int)GameSettings.difficulty;
+        difficultyDropdown.SetValueWithoutNotify((int)GameSettings.difficulty);
         difficultyDropdown.RefreshShownValue();
 
+        difficultyDropdown.onValueChanged.RemoveListener(SetDifficulty);
         difficultyDropdown.onValueChanged.AddListener(SetDifficulty);
     }
 
@@ -238,8 +285,7 @@ public class MenuController : MonoBehaviour
 
     public void SetDifficulty(int index)
     {
-        GameDifficulty selectedDifficulty = (GameDifficulty)index;
-        GameSettings.ApplyDifficulty(selectedDifficulty);
+        GameSettings.ApplyDifficultyIndex(index);
         GameSettings.Save();
     }
 
