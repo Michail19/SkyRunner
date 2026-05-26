@@ -16,6 +16,14 @@ public class ArenaGenerator : MonoBehaviour
     public float tileSize = 2f;
     public float tileThickness = 0.25f;
 
+    [Header("Difficulty Map Scale")]
+    public bool scaleGridWithDifficulty = true;
+    public float easyGridScale = 0.5f;
+    public float normalGridScale = 1f;
+    public float hardGridScale = 1.5f;
+    public int minGridSize = 12;
+    public int maxGridSize = 96;
+
     [Header("Shape")]
     public float islandRadiusOffset = 1f;
 
@@ -37,9 +45,63 @@ public class ArenaGenerator : MonoBehaviour
     [Header("Generated Tiles")]
     public List<ArenaTile> tiles = new List<ArenaTile>();
 
+    private int baseGridSize;
+
+    private void Awake()
+    {
+        baseGridSize = gridSize;
+    }
+
     private void Start()
     {
+        ApplyDifficultyGridScale();
         Generate();
+    }
+
+    private void ApplyDifficultyGridScale()
+    {
+        if (!scaleGridWithDifficulty)
+        {
+            return;
+        }
+
+        if (baseGridSize <= 0)
+        {
+            baseGridSize = gridSize;
+        }
+
+        GameSettings.Load();
+
+        float scale = GetGridScaleForDifficulty(GameSettings.difficulty);
+        int scaledGridSize = Mathf.RoundToInt(baseGridSize * scale);
+
+        gridSize = Mathf.Clamp(scaledGridSize, minGridSize, maxGridSize);
+
+        if (gridSize % 2 != 0)
+        {
+            gridSize++;
+        }
+
+        Debug.Log(
+            $"ArenaGenerator: difficulty={GameSettings.difficulty}, " +
+            $"baseGridSize={baseGridSize}, scaledGridSize={gridSize}",
+            this
+        );
+    }
+
+    private float GetGridScaleForDifficulty(GameDifficulty selectedDifficulty)
+    {
+        switch (selectedDifficulty)
+        {
+            case GameDifficulty.Easy:
+                return easyGridScale;
+
+            case GameDifficulty.Hard:
+                return hardGridScale;
+
+            default:
+                return normalGridScale;
+        }
     }
 
     [ContextMenu("Regenerate Arena")]
@@ -97,9 +159,6 @@ public class ArenaGenerator : MonoBehaviour
                 ConfigureSurface(tile, heightLevel);
 
                 tile.name = $"ArenaTile_{x}_{z}_{heightLevel}";
-
-                // Важно: масштабируем prefab, но collider задаём в локальных координатах.
-                //tile.transform.localScale = new Vector3(tileSize, tileThickness, tileSize);
 
                 tile.transform.localScale = Vector3.one;
 

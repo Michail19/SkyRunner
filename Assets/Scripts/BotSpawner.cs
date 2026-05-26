@@ -20,86 +20,145 @@ public class BotSpawner : MonoBehaviour
     public float minDistanceFromPlayer = 8f;
     public float edgeSpawnPercent = 0.55f;
 
-    [Header("Difficulty")]
+    [Header("Difficulty Growth")]
     public bool increaseDifficulty = true;
     public float difficultyStepTime = 20f;
     public int maxBotsPerWave = 3;
     public int maxAliveBotsLimit = 10;
     public float minSpawnInterval = 3f;
 
+    [Header("Auto Scale")]
+    public bool autoScaleWithArena = true;
+    public int minMaxAliveBots = 1;
+    public int maxMaxAliveBots = 15;
+
     private readonly List<SimpleBotPusher> aliveBots = new List<SimpleBotPusher>();
     private float difficultyTimer;
 
-    [Header("Auto Scale")]
-    public bool autoScaleWithArena = true;
-    public int minMaxAliveBots = 4;
-    public int maxMaxAliveBots = 15;
-
     private void Start()
     {
-        if (autoScaleWithArena)
-        {
-            ApplyArenaScale();
-        }
-
+        GameSettings.Load();
         ApplyGameSettings();
         StartCoroutine(SpawnLoop());
     }
 
-    private void ApplyArenaScale()
+    private void ApplyGameSettings()
+    {
+        float arenaScale = GetArenaScale();
+
+        spawnInterval = autoScaleWithArena
+            ? Mathf.Max(minSpawnInterval, GameSettings.botSpawnInterval / Mathf.Sqrt(arenaScale))
+            : GameSettings.botSpawnInterval;
+
+        maxAliveBots = autoScaleWithArena
+            ? Mathf.Clamp(
+                Mathf.RoundToInt(GameSettings.maxAliveBots * arenaScale),
+                minMaxAliveBots,
+                maxMaxAliveBots
+            )
+            : GameSettings.maxAliveBots;
+
+        maxAliveBots = Mathf.Max(1, maxAliveBots);
+
+        maxAliveBotsLimit = GetDifficultyMaxAliveLimit(maxAliveBots, arenaScale);
+        maxBotsPerWave = GetDifficultyMaxBotsPerWave(arenaScale);
+        botsPerWave = GetInitialBotsPerWave();
+
+        minDistanceFromPlayer = GetSpawnMinDistance();
+    }
+
+    private float GetArenaScale()
+    {
+        if (!autoScaleWithArena || arenaGenerator == null)
+        {
+            return 1f;
+        }
+
+        return Mathf.Max(0.5f, arenaGenerator.gridSize / 18f);
+    }
+
+    private int GetInitialBotsPerWave()
+    {
+        switch (GameSettings.difficulty)
+        {
+            case GameDifficulty.Easy:
+                return 1;
+
+            case GameDifficulty.Hard:
+                return 2;
+
+            default:
+                return 1;
+        }
+    }
+
+    private int GetDifficultyMaxBotsPerWave(float arenaScale)
+    {
+        int baseLimit;
+
+        switch (GameSettings.difficulty)
+        {
+            case GameDifficulty.Easy:
+                baseLimit = 1;
+                break;
+
+            case GameDifficulty.Hard:
+                baseLimit = 4;
+                break;
+
+            default:
+                baseLimit = 3;
+                break;
+        }
+
+        return Mathf.Clamp(Mathf.RoundToInt(baseLimit * arenaScale), 1, 8);
+    }
+
+    private int GetDifficultyMaxAliveLimit(int currentMaxAliveBots, float arenaScale)
+    {
+        int baseLimit;
+
+        switch (GameSettings.difficulty)
+        {
+            case GameDifficulty.Easy:
+                baseLimit = 3;
+                break;
+
+            case GameDifficulty.Hard:
+                baseLimit = 10;
+                break;
+
+            default:
+                baseLimit = 6;
+                break;
+        }
+
+        int scaledLimit = Mathf.RoundToInt(baseLimit * arenaScale);
+        return Mathf.Clamp(Mathf.Max(currentMaxAliveBots, scaledLimit), currentMaxAliveBots, 20);
+    }
+
+    private float GetSpawnMinDistance()
     {
         if (arenaGenerator == null)
         {
-            return;
+            return minDistanceFromPlayer;
         }
 
-        float scale = arenaGenerator.gridSize / 18f;
-
-        minDistanceFromPlayer = arenaGenerator.GetWorldRadius() * 0.35f;
-
-        maxAliveBots = Mathf.Clamp(
-            Mathf.RoundToInt(GameSettings.maxAliveBots * scale),
-            minMaxAliveBots,
-            maxMaxAliveBots
+        return Mathf.Max(
+            arenaGenerator.tileSize * 3f,
+            arenaGenerator.GetWorldRadius() * 0.35f
         );
-
-        maxAliveBotsLimit = Mathf.Clamp(
-            Mathf.RoundToInt(10 * scale),
-            maxAliveBots,
-            20
-        );
-
-        maxBotsPerWave = Mathf.Clamp(
-            Mathf.RoundToInt(3 * scale),
-            3,
-            8
-        );
-
-        spawnInterval = Mathf.Max(
-            3f,
-            GameSettings.botSpawnInterval / Mathf.Sqrt(scale)
-        );
-    }
-
-    private void ApplyGameSettings()
-    {
-        spawnInterval = GameSettings.botSpawnInterval;
-        maxAliveBots = GameSettings.maxAliveBots;
     }
 
     private IEnumerator SpawnLoop()
     {
-        // Ждём один кадр, чтобы ArenaGenerator точно успел создать клетки.
         yield return null;
-
         yield return new WaitForSeconds(startDelay);
 
         while (true)
         {
             CleanupDeadBots();
-
             SpawnWave();
-
             UpdateDifficulty();
 
             yield return new WaitForSeconds(spawnInterval);
@@ -152,7 +211,6 @@ public class BotSpawner : MonoBehaviour
     private ArenaTile GetRandomSpawnTile()
     {
         List<ArenaTile> candidates = new List<ArenaTile>();
-
         float maxDistanceFromCenter = GetMaxTileDistanceFromCenter();
 
         foreach (ArenaTile tile in arenaGenerator.tiles)
@@ -167,7 +225,6 @@ public class BotSpawner : MonoBehaviour
                 tile.transform.position.z
             ).magnitude;
 
-            // Берём плитки ближе к краю карты.
             if (distanceFromCenter < maxDistanceFromCenter * edgeSpawnPercent)
             {
                 continue;

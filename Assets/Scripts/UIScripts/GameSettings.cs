@@ -9,6 +9,10 @@ public enum GameDifficulty
 
 public static class GameSettings
 {
+    private const string MouseSensitivityKey = "MouseSensitivity";
+    private const string MasterVolumeKey = "MasterVolume";
+    private const string DifficultyKey = "Difficulty";
+
     public static float mouseSensitivity = 0.12f;
     public static float masterVolume = 1f;
 
@@ -40,8 +44,8 @@ public static class GameSettings
                 tilesPerWave = 1;
 
                 botSpawnInterval = 10f;
-                maxAliveBots = 3;
-                botMoveSpeedMultiplier = 0.9f;
+                maxAliveBots = 2;
+                botMoveSpeedMultiplier = 0.85f;
                 break;
 
             case GameDifficulty.Normal:
@@ -58,7 +62,7 @@ public static class GameSettings
                 break;
 
             case GameDifficulty.Hard:
-                itemsToCollect = 4;
+                itemsToCollect = 5;
 
                 collapseStartDelay = 3f;
                 warningTime = 1.1f;
@@ -72,22 +76,31 @@ public static class GameSettings
         }
     }
 
+    public static void ApplyDifficultyIndex(int difficultyIndex)
+    {
+        int normalizedIndex = Mathf.Clamp(
+            difficultyIndex,
+            (int)GameDifficulty.Easy,
+            (int)GameDifficulty.Hard
+        );
+
+        ApplyDifficulty((GameDifficulty)normalizedIndex);
+    }
+
     public static void Save()
     {
-        PlayerPrefs.SetFloat("MouseSensitivity", mouseSensitivity);
-        PlayerPrefs.SetFloat("MasterVolume", masterVolume);
-        PlayerPrefs.SetInt("Difficulty", (int)difficulty);
+        PlayerPrefs.SetFloat(MouseSensitivityKey, mouseSensitivity);
+        PlayerPrefs.SetFloat(MasterVolumeKey, masterVolume);
+        PlayerPrefs.SetInt(DifficultyKey, (int)difficulty);
         PlayerPrefs.Save();
     }
 
     public static void Load()
     {
-        mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 0.12f);
-        masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
+        mouseSensitivity = PlayerPrefs.GetFloat(MouseSensitivityKey, 0.12f);
+        masterVolume = PlayerPrefs.GetFloat(MasterVolumeKey, 1f);
 
-        int difficultyIndex = PlayerPrefs.GetInt("Difficulty", (int)GameDifficulty.Normal);
-        difficulty = (GameDifficulty)difficultyIndex;
-
-        ApplyDifficulty(difficulty);
+        int difficultyIndex = PlayerPrefs.GetInt(DifficultyKey, (int)GameDifficulty.Normal);
+        ApplyDifficultyIndex(difficultyIndex);
     }
 }

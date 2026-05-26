@@ -18,52 +18,54 @@ public class ObjectiveManager : MonoBehaviour
     public float itemHeightOffset = 1f;
     public float minDistanceFromCenter = 6f;
 
+    [Header("Auto Scale")]
+    public bool autoScaleWithArena = true;
+    public int minItems = 1;
+    public int maxItems = 8;
+
     private int collectedItems;
     private readonly List<CollectibleItem> spawnedItems = new List<CollectibleItem>();
 
-    [Header("Auto Scale")]
-    public bool autoScaleWithArena = true;
-    public int minItems = 3;
-    public int maxItems = 8;
-
     private void Start()
     {
-        itemsToSpawn = GameSettings.itemsToCollect;
+        GameSettings.Load();
+        ApplyGameSettings();
 
         if (exitZoneObject != null)
         {
             exitZoneObject.SetActive(false);
         }
 
-        if (autoScaleWithArena)
-        {
-            ApplyArenaScale();
-        }
-        else
-        {
-            itemsToSpawn = GameSettings.itemsToCollect;
-        }
-
         Invoke(nameof(SpawnItems), 0.2f);
         UpdateUI();
     }
-    private void ApplyArenaScale()
+
+    private void ApplyGameSettings()
     {
+        itemsToSpawn = GameSettings.itemsToCollect;
+
         if (arenaGenerator == null)
         {
-            itemsToSpawn = GameSettings.itemsToCollect;
             return;
         }
 
-        float scale = arenaGenerator.gridSize / 18f;
+        minDistanceFromCenter = arenaGenerator.GetWorldRadius() * 0.35f;
+
+        if (!autoScaleWithArena)
+        {
+            return;
+        }
+
+        float arenaScale = Mathf.Max(0.5f, arenaGenerator.gridSize / 18f);
+        int scaledItems = Mathf.RoundToInt(GameSettings.itemsToCollect * arenaScale);
 
         itemsToSpawn = Mathf.Clamp(
-            Mathf.RoundToInt(GameSettings.itemsToCollect * scale),
-            minItems,
+            scaledItems,
+            Mathf.Min(minItems, GameSettings.itemsToCollect),
             maxItems
         );
 
-        minDistanceFromCenter = arenaGenerator.GetWorldRadius() * 0.35f;
+        itemsToSpawn = Mathf.Max(1, itemsToSpawn);
     }
 
     private void SpawnItems()
@@ -108,7 +110,6 @@ public class ObjectiveManager : MonoBehaviour
             candidates.RemoveAt(index);
 
             Vector3 position = tile.transform.position + Vector3.up * itemHeightOffset;
-
             CollectibleItem selectedPrefab = GetRandomItemPrefab();
 
             if (selectedPrefab == null)
