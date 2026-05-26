@@ -14,7 +14,7 @@ public class TileCollapseManager : MonoBehaviour
     public float pauseAfterCollapse = 1.5f;
     public int tilesPerWave = 1;
 
-    [Header("Difficulty")]
+    [Header("Difficulty Growth")]
     public bool increaseDifficulty = true;
     public float difficultyStepTime = 15f;
     public int maxTilesPerWave = 4;
@@ -23,63 +23,124 @@ public class TileCollapseManager : MonoBehaviour
     [Header("Safety")]
     public float minDistanceFromPlayer = 3f;
 
-    private bool isRunning;
-    private float difficultyTimer;
-
     [Header("Auto Scale")]
     public bool autoScaleWithArena = true;
     public int minTilesPerWave = 1;
     public int maxTilesPerWaveLimit = 10;
 
+    private bool isRunning;
+    private float difficultyTimer;
+
     private void Start()
     {
-        if (autoScaleWithArena)
-        {
-            ApplyArenaScale();
-        }
-
+        GameSettings.Load();
         ApplyGameSettings();
         StartCollapse();
     }
 
-    private void ApplyArenaScale()
-    {
-        if (arenaGenerator == null)
-        {
-            return;
-        }
-
-        float scale = arenaGenerator.gridSize / 18f;
-
-        minDistanceFromPlayer = Mathf.Max(
-            3f,
-            arenaGenerator.tileSize * 2.5f
-        );
-
-        tilesPerWave = Mathf.Clamp(
-            Mathf.RoundToInt(GameSettings.tilesPerWave * scale),
-            minTilesPerWave,
-            maxTilesPerWaveLimit
-        );
-
-        maxTilesPerWave = Mathf.Clamp(
-            Mathf.RoundToInt(4 * scale),
-            4,
-            maxTilesPerWaveLimit
-        );
-
-        difficultyStepTime = Mathf.Max(
-            12f,
-            15f / Mathf.Sqrt(scale)
-        );
-    }
-
     private void ApplyGameSettings()
     {
+        float arenaScale = GetArenaScale();
+
         startDelay = GameSettings.collapseStartDelay;
         warningTime = GameSettings.warningTime;
         pauseAfterCollapse = GameSettings.pauseAfterCollapse;
-        tilesPerWave = GameSettings.tilesPerWave;
+
+        tilesPerWave = autoScaleWithArena
+            ? Mathf.Clamp(
+                Mathf.RoundToInt(GameSettings.tilesPerWave * arenaScale),
+                minTilesPerWave,
+                maxTilesPerWaveLimit
+            )
+            : GameSettings.tilesPerWave;
+
+        tilesPerWave = Mathf.Max(1, tilesPerWave);
+        maxTilesPerWave = GetDifficultyMaxTilesPerWave(arenaScale);
+        minPauseAfterCollapse = GetDifficultyMinPause();
+        difficultyStepTime = GetDifficultyStepTime(arenaScale);
+        minDistanceFromPlayer = GetMinDistanceFromPlayer();
+    }
+
+    private float GetArenaScale()
+    {
+        if (!autoScaleWithArena || arenaGenerator == null)
+        {
+            return 1f;
+        }
+
+        return Mathf.Max(0.5f, arenaGenerator.gridSize / 18f);
+    }
+
+    private int GetDifficultyMaxTilesPerWave(float arenaScale)
+    {
+        int baseLimit;
+
+        switch (GameSettings.difficulty)
+        {
+            case GameDifficulty.Easy:
+                baseLimit = 2;
+                break;
+
+            case GameDifficulty.Hard:
+                baseLimit = 6;
+                break;
+
+            default:
+                baseLimit = 4;
+                break;
+        }
+
+        return Mathf.Clamp(Mathf.RoundToInt(baseLimit * arenaScale), tilesPerWave, maxTilesPerWaveLimit);
+    }
+
+    private float GetDifficultyMinPause()
+    {
+        switch (GameSettings.difficulty)
+        {
+            case GameDifficulty.Easy:
+                return 1.25f;
+
+            case GameDifficulty.Hard:
+                return 0.35f;
+
+            default:
+                return 0.5f;
+        }
+    }
+
+    private float GetDifficultyStepTime(float arenaScale)
+    {
+        float baseStepTime;
+
+        switch (GameSettings.difficulty)
+        {
+            case GameDifficulty.Easy:
+                baseStepTime = 24f;
+                break;
+
+            case GameDifficulty.Hard:
+                baseStepTime = 12f;
+                break;
+
+            default:
+                baseStepTime = 16f;
+                break;
+        }
+
+        return Mathf.Max(8f, baseStepTime / Mathf.Sqrt(arenaScale));
+    }
+
+    private float GetMinDistanceFromPlayer()
+    {
+        if (arenaGenerator == null)
+        {
+            return minDistanceFromPlayer;
+        }
+
+        return Mathf.Max(
+            3f,
+            arenaGenerator.tileSize * 2.5f
+        );
     }
 
     public void StartCollapse()
